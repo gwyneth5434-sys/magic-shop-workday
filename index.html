@@ -1,0 +1,5266 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>魔法商店打工日</title>
+  <style>
+    :root {
+      --bg: #120d0a;
+      --wood: #2a1710;
+      --wood-light: #5a3824;
+      --paper: #e7d3a5;
+      --paper-deep: #c8aa70;
+      --gold: #c99b45;
+      --silver: #c7ced4;
+      --ink: #2a1b12;
+      --red: #a94a3b;
+      --green: #5f9164;
+      --blue: #5e84a6;
+      --shadow: rgba(0, 0, 0, 0.38);
+      --glow: rgba(230, 181, 93, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--paper);
+      background:
+        linear-gradient(180deg, rgba(22, 16, 13, 0.86), rgba(10, 7, 6, 0.95)),
+        repeating-linear-gradient(90deg, #20130e 0 18px, #1a0f0b 18px 36px);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1560px, calc(100% - 20px));
+      margin: 0 auto;
+      padding: 10px 0 14px;
+    }
+
+    .screen {
+      min-height: calc(100vh - 24px);
+      border: 2px solid rgba(201, 155, 69, 0.42);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(201, 155, 69, 0.15), transparent 28%),
+        radial-gradient(circle at 86% 18%, rgba(94, 132, 166, 0.13), transparent 24%),
+        linear-gradient(180deg, rgba(58, 34, 23, 0.92), rgba(30, 17, 12, 0.96));
+      box-shadow: 0 18px 50px var(--shadow), inset 0 0 60px rgba(0, 0, 0, 0.28);
+      overflow: visible;
+      position: relative;
+    }
+
+    .screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 8px 8px;
+      mix-blend-mode: screen;
+    }
+
+    .cover {
+      min-height: calc(100vh - 24px);
+      border: 0;
+      background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.2)),
+        url("cover.png") center / cover no-repeat;
+      box-shadow: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 0 9vh;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      display: none;
+    }
+
+    .cover-start-btn,
+    .intro-start-btn {
+      border: 0;
+      background: transparent;
+      color: #f4dfaa;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.82), 0 0 18px rgba(234, 194, 105, 0.55);
+    }
+
+    .cover-start-btn:hover,
+    .intro-start-btn:hover {
+      color: #fff3ca;
+      transform: translateY(-2px);
+    }
+
+    .intro-screen {
+      min-height: calc(100vh - 24px);
+      border: 0;
+      background: #000;
+      box-shadow: none;
+      display: grid;
+      place-items: center;
+      padding: 40px;
+      opacity: 1;
+      transition: opacity 580ms ease;
+    }
+
+    .intro-screen::before {
+      display: none;
+    }
+
+    .intro-screen.fade-out {
+      opacity: 0;
+    }
+
+    .intro-card {
+      max-width: 720px;
+      color: #f6f1e8;
+      text-align: center;
+      font-size: clamp(18px, 2vw, 25px);
+      line-height: 2;
+      animation: introFadeIn 820ms ease both;
+    }
+
+    .intro-card p {
+      margin: 0 0 12px;
+    }
+
+    .intro-card strong {
+      color: #fff8d8;
+      font-weight: 900;
+    }
+
+    .intro-start-btn {
+      margin-top: 28px;
+      font-size: 22px;
+      color: #ffffff;
+      text-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
+    }
+
+    @keyframes introFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 18px;
+      color: #f1d283;
+      font-size: clamp(48px, 7vw, 90px);
+      line-height: 0.98;
+      text-shadow: 0 5px 0 #4c2d1d, 0 0 24px var(--glow);
+    }
+
+
+    .primary-btn,
+    .next-btn,
+    .secondary-btn {
+      border: 2px solid #f0ca72;
+      color: #21150d;
+      background: linear-gradient(180deg, #f3d687, #bd8732);
+      box-shadow: 0 5px 0 #5a321d, 0 14px 24px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+
+    .primary-btn:hover,
+    .next-btn:hover,
+    .secondary-btn:hover,
+    .product-card:not(:disabled):hover {
+      transform: translateY(-2px);
+      filter: brightness(1.06);
+    }
+
+    .primary-btn {
+      margin-top: 18px;
+      padding: 15px 26px;
+      min-width: 168px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .secondary-btn {
+      min-height: 42px;
+      padding: 8px 14px;
+      color: #f1d283;
+      background: linear-gradient(180deg, #4f3322, #271710);
+      box-shadow: 0 4px 0 #140c08, 0 10px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .business {
+      padding: 14px;
+    }
+
+    .business.screen,
+    .after-sale-screen {
+      min-height: auto;
+    }
+
+    .stats-bar {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .stat {
+      min-height: 54px;
+      padding: 8px 10px;
+      border: 2px solid rgba(201, 155, 69, 0.45);
+      background: rgba(24, 14, 10, 0.7);
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.18);
+    }
+
+    .stat-label {
+      color: #cbb98e;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      color: #f1d283;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .business-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(270px, 0.64fr) minmax(720px, 1.36fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .customer-panel,
+    .product-panel,
+    .product-detail,
+    .feedback-panel,
+    .after-sale-panel,
+    .ending-panel {
+      border: 2px solid rgba(231, 211, 165, 0.28);
+      background: rgba(20, 12, 8, 0.72);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.22), inset 0 0 0 4px rgba(255,255,255,0.025);
+    }
+
+    .customer-panel {
+      min-height: 0;
+      padding: 14px;
+    }
+
+    .customer-name {
+      color: #f1d283;
+      font-size: 23px;
+      margin-bottom: 8px;
+    }
+
+    .product-panel {
+      padding: 12px;
+    }
+
+    .panel-title {
+      margin: 0 0 12px;
+      color: #f1d283;
+      font-size: 20px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .product-card {
+      min-height: 108px;
+      padding: 9px;
+      color: #25180f;
+      text-align: left;
+      cursor: pointer;
+      border: 2px solid #21150d;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.28), transparent 44%),
+        var(--paper);
+      box-shadow: 0 5px 0 #5b3924, inset 0 0 0 2px rgba(255,255,255,0.2);
+      transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+    }
+
+    .product-card:disabled {
+      cursor: default;
+      opacity: 0.68;
+      filter: saturate(0.8);
+    }
+
+    .product-card.selected-good {
+      outline: 4px solid rgba(95, 145, 100, 0.8);
+    }
+
+    .product-card.selected-bad {
+      outline: 4px solid rgba(169, 74, 59, 0.8);
+    }
+
+    .product-card.selected-view {
+      outline: 4px solid rgba(241, 210, 131, 0.85);
+    }
+
+    .product-name {
+      display: block;
+      min-height: 34px;
+      color: #24150e;
+      font-weight: 900;
+      line-height: 1.32;
+    }
+
+    .product-price {
+      display: inline-block;
+      margin: 8px 0;
+      padding: 3px 7px;
+      color: #21150d;
+      background: #d8bd75;
+      border: 1px solid #6e4a2e;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .product-detail {
+      margin-top: 12px;
+      padding: 14px;
+      min-height: 112px;
+      background:
+        linear-gradient(180deg, rgba(231, 211, 165, 0.08), transparent 50%),
+        rgba(22, 13, 9, 0.82);
+    }
+
+    .detail-name {
+      margin: 0 0 8px;
+      color: #f1d283;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .detail-copy {
+      margin: 0 0 10px;
+      color: #ead9b3;
+      line-height: 1.65;
+    }
+
+    .confirm-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .feedback-panel {
+      position: relative;
+      z-index: 2;
+      margin-top: 10px;
+      padding: 12px;
+      min-height: 76px;
+    }
+
+    .feedback-text {
+      margin: 0;
+      color: #f3e5c2;
+      font-size: 15px;
+      line-height: 1.58;
+    }
+
+    .feedback-panel.good {
+      border-color: rgba(95, 145, 100, 0.85);
+      background: rgba(28, 51, 34, 0.74);
+    }
+
+    .feedback-panel.bad {
+      border-color: rgba(169, 74, 59, 0.85);
+      background: rgba(62, 29, 24, 0.74);
+    }
+
+    .next-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+      padding-right: 116px;
+    }
+
+    .next-btn {
+      min-width: 150px;
+      min-height: 46px;
+      padding: 10px 18px;
+      font-weight: 800;
+    }
+
+    .record-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 8px;
+      padding-right: 0;
+    }
+
+    .record-item {
+      padding: 10px;
+      border: 1px solid rgba(231, 211, 165, 0.28);
+      background: rgba(9, 6, 4, 0.42);
+    }
+
+    .after-sale-book-button {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      gap: 4px;
+      width: 92px;
+      padding: 8px 6px;
+      border: 2px solid rgba(240, 202, 114, 0.72);
+      color: #f1d283;
+      background: rgba(22, 13, 9, 0.82);
+      box-shadow: 0 8px 0 rgba(0,0,0,0.28), 0 16px 26px rgba(0,0,0,0.32);
+      cursor: pointer;
+    }
+
+    .after-sale-book-button:hover,
+    .after-sale-book-button:focus-visible {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+    }
+
+    .book-icon-wrap {
+      position: relative;
+      width: 64px;
+      height: 64px;
+    }
+
+    .book-icon-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .book-icon-open {
+      display: none;
+    }
+
+    .after-sale-book-button:hover .book-icon-closed,
+    .after-sale-book-button:focus-visible .book-icon-closed {
+      display: none;
+    }
+
+    .after-sale-book-button:hover .book-icon-open,
+    .after-sale-book-button:focus-visible .book-icon-open {
+      display: block;
+    }
+
+    .book-label {
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      text-shadow: 0 2px 0 #140c08;
+    }
+
+    .after-sale-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(9, 6, 4, 0.68);
+    }
+
+    .after-sale-dialog {
+      width: min(980px, 100%);
+      padding: 18px;
+      border: 2px solid rgba(240, 202, 114, 0.72);
+      background:
+        linear-gradient(180deg, rgba(61, 35, 22, 0.96), rgba(21, 13, 9, 0.98)),
+        repeating-linear-gradient(90deg, rgba(231, 211, 165, 0.04) 0 10px, transparent 10px 20px);
+      box-shadow: 0 24px 56px rgba(0,0,0,0.48), inset 0 0 0 4px rgba(255,255,255,0.025);
+    }
+
+    .modal-title-row {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .modal-book-art {
+      width: 120px;
+      height: 84px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .modal-title {
+      margin: 0;
+      color: #f1d283;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1;
+      text-shadow: 0 4px 0 #4c2d1d, 0 0 20px var(--glow);
+    }
+
+    .modal-close {
+      min-height: 40px;
+      padding: 8px 12px;
+    }
+
+    .modal-record-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 10px;
+    }
+
+    .confirm-sale-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(9, 6, 4, 0.58);
+    }
+
+    .confirm-sale-dialog {
+      width: min(520px, 100%);
+      padding: 18px;
+      border: 2px solid rgba(240, 202, 114, 0.72);
+      background:
+        linear-gradient(180deg, rgba(61, 35, 22, 0.98), rgba(21, 13, 9, 0.98));
+      box-shadow: 0 20px 48px rgba(0,0,0,0.46), inset 0 0 0 4px rgba(255,255,255,0.025);
+    }
+
+    .confirm-sale-title {
+      margin: 0 0 10px;
+      color: #f1d283;
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    .confirm-sale-copy {
+      margin: 0 0 14px;
+      color: #ead9b3;
+      line-height: 1.65;
+    }
+
+    .record-title {
+      margin: 0 0 6px;
+      color: #f1d283;
+      font-weight: 800;
+    }
+
+    .record-copy {
+      margin: 0;
+      color: #ead9b3;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .after-sale-screen {
+      padding: 22px;
+    }
+
+    .after-sale-panel {
+      position: relative;
+      z-index: 2;
+      padding: 18px;
+      margin-bottom: 18px;
+      background:
+        linear-gradient(180deg, rgba(69, 43, 27, 0.86), rgba(23, 14, 9, 0.88)),
+        rgba(20, 12, 8, 0.72);
+    }
+
+    .after-sale-panel.good {
+      border-color: rgba(95, 145, 100, 0.85);
+    }
+
+    .after-sale-panel.bad {
+      border-color: rgba(169, 74, 59, 0.85);
+    }
+
+    .after-sale-title {
+      margin: 0 0 8px;
+      color: #f1d283;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.15;
+    }
+
+    .after-sale-copy {
+      margin: 0 0 12px;
+      color: #ead9b3;
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .result-line {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 7px 10px;
+      color: #21150d;
+      background: var(--paper);
+      border: 2px solid #6e4a2e;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .business.screen,
+    .after-sale-screen {
+      min-height: 100vh;
+      border: 0;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(20, 12, 8, 0.08), rgba(12, 7, 5, 0.2)),
+        url("shop-day.jpg") center / cover no-repeat;
+      box-shadow: none;
+    }
+
+    .app {
+      width: 100%;
+      padding: 0;
+    }
+
+    .business.scene-night,
+    .after-sale-screen.scene-night {
+      background:
+        linear-gradient(180deg, rgba(5, 5, 10, 0.18), rgba(5, 3, 2, 0.32)),
+        url("shop-night.png") center / cover no-repeat;
+    }
+
+    .business.screen::before,
+    .after-sale-screen::before {
+      display: none;
+    }
+
+    .business {
+      position: relative;
+      padding: 12px 24px 12px 118px;
+    }
+
+    .business .stats-bar,
+    .after-sale-screen .stats-bar {
+      position: relative;
+      z-index: 8;
+      width: min(980px, calc(100vw - 176px));
+      grid-template-columns: repeat(5, minmax(112px, 1fr));
+      gap: 8px;
+      margin: 0 0 10px;
+    }
+
+    .business .stat,
+    .after-sale-screen .stat {
+      min-height: 46px;
+      padding: 7px 10px;
+      background: rgba(18, 10, 7, 0.62);
+      backdrop-filter: blur(2px);
+    }
+
+    .business .stat-label,
+    .after-sale-screen .stat-label {
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .business .stat-value,
+    .after-sale-screen .stat-value {
+      font-size: 18px;
+    }
+
+    .business-grid {
+      position: static;
+      grid-template-columns: minmax(560px, 0.55fr) minmax(520px, 1fr);
+      gap: 24px;
+      min-height: 0;
+      height: calc(100vh - 300px);
+      min-height: 420px;
+      align-items: stretch;
+    }
+
+    .customer-panel,
+    .product-panel,
+    .product-detail,
+    .feedback-panel,
+    .after-sale-panel {
+      backdrop-filter: blur(2px);
+    }
+
+    .customer-panel {
+      position: absolute;
+      left: 200px;
+      bottom: 210px;
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      gap: 12px;
+      width: 540px;
+      height: 510px;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .customer-panel .portrait {
+      flex: 0 0 405px;
+      width: 405px;
+      height: 495px;
+      margin: 0;
+      border: 0;
+      background-color: transparent;
+      background-position: center bottom;
+      background-repeat: no-repeat;
+      background-size: contain;
+      box-shadow: none;
+      filter: drop-shadow(0 13px 13px rgba(0, 0, 0, 0.55));
+      image-rendering: auto;
+      opacity: 1;
+      transform: none;
+    }
+
+    .customer-panel .portrait::before,
+    .customer-panel .portrait::after {
+      display: none;
+    }
+
+    .customer-panel .portrait.harry { background-image: url("char-harry.png"); }
+    .customer-panel .portrait.hermione { background-image: url("char-hermione.png"); }
+    .customer-panel .portrait.trial { background-image: url("char-trial.png"); }
+    .customer-panel .portrait.nightwizard { background-image: url("char-nightwizard.png"); }
+    .customer-panel .portrait.hagrid {
+      background-image: url("char-hagrid.png");
+      flex-basis: 485px;
+      width: 485px;
+      height: 500px;
+    }
+    .customer-panel .portrait.draco { background-image: url("char-draco.png"); }
+    .customer-panel .portrait.theodore { background-image: url("char-theodore.png"); }
+    .customer-panel .portrait.ariana {
+      background-image: url("char-ariana.png");
+      opacity: 0.86;
+      filter: drop-shadow(0 0 18px rgba(220, 230, 255, 0.5));
+    }
+    .customer-panel .portrait.aberforth { background-image: url("char-aberforth.png"); }
+    .customer-panel .portrait.lupin { background-image: url("char-lupin.png"); }
+    .customer-panel .portrait.bowtruckle {
+      background-image: url("char-bowtruckle.png");
+      flex-basis: 345px;
+      width: 345px;
+    }
+    .customer-panel .portrait.crookshanks {
+      background-image: url("char-crookshanks.png");
+      flex-basis: 450px;
+      width: 450px;
+      height: 390px;
+    }
+    .customer-panel .portrait.rita { background-image: url("char-rita.png"); }
+    .customer-panel .portrait.james {
+      background-image: url("char-james.png");
+      opacity: 0.82;
+      filter: drop-shadow(0 0 18px rgba(220, 230, 255, 0.42));
+    }
+    .customer-panel .portrait.snake {
+      background-image: url("char-snake.png");
+      flex-basis: 450px;
+      width: 450px;
+      height: 360px;
+    }
+    .customer-panel .portrait.toad {
+      background-image: url("char-toad.png");
+      flex-basis: 430px;
+      width: 430px;
+      height: 430px;
+    }
+
+    .toad-ending-screen .customer-panel.toad-panel {
+      left: auto;
+      right: 210px;
+      justify-content: flex-end;
+    }
+
+    .toad-ending-screen .customer-panel.toad-panel .customer-name {
+      margin: 0 -20px 22px 0;
+    }
+
+    .portrait {
+      width: 112px;
+      height: 112px;
+      margin: 8px auto;
+      transform: scale(1.15);
+      transform-origin: bottom center;
+    }
+
+    .customer-name {
+      margin: 0 0 22px -40px;
+      padding: 7px 12px;
+      color: #ffe08a;
+      background: rgba(19, 10, 7, 0.7);
+      border: 2px solid rgba(240, 202, 114, 0.55);
+      font-size: 20px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .product-panel {
+      grid-column: 2;
+      align-self: stretch;
+      height: 100%;
+      min-height: 0;
+      position: relative;
+      z-index: 5;
+      opacity: 0;
+      overflow: visible;
+      pointer-events: none;
+      padding: 12px;
+      border-color: rgba(116, 73, 39, 0.78);
+      background: rgba(20, 11, 7, 0.58);
+      transform: translateX(18px);
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .business.shelf-open .product-panel {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .shelf-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      min-height: 34px;
+      margin-bottom: 10px;
+    }
+
+    .shelf-header .panel-title {
+      margin: 0;
+    }
+
+    .shelf-pager {
+      position: absolute;
+      left: 50%;
+      top: 1800%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #f1d283;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .shelf-page-btn {
+      width: 34px;
+      height: 34px;
+      border: 2px solid rgba(240, 202, 114, 0.75);
+      color: #21150d;
+      background: linear-gradient(180deg, #f3d687, #bd8732);
+      box-shadow: 0 3px 0 #5a321d;
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .shelf-page-btn:disabled {
+      cursor: default;
+      opacity: 0.42;
+      filter: saturate(0.45);
+    }
+
+    .product-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .product-card {
+      min-height: 0;
+      height: 100px;
+      padding: 8px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.22), transparent 38%),
+        rgba(231, 211, 165, 0.86);
+    }
+
+    .product-name {
+      display: -webkit-box;
+      min-height: 0;
+      overflow: hidden;
+      font-size: 14px;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .product-price {
+      margin: 6px 0 0;
+      padding: 3px 7px;
+      font-size: 13px;
+    }
+
+    .product-detail {
+      min-height: 0;
+      height: 134px;
+      margin-top: 2px;
+      padding: 7px 10px 48px;
+      position: relative;
+      overflow: hidden;
+      background: rgba(17, 9, 6, 0.7);
+    }
+
+    .detail-name {
+      margin-bottom: 4px;
+      font-size: 17px;
+    }
+
+    .detail-copy {
+      margin-bottom: 4px;
+      font-size: 14px;
+      line-height: 1.34;
+    }
+
+    .product-detail:has(.confirm-row) .detail-copy {
+      max-width: calc(100% - 316px);
+    }
+
+    .product-detail .confirm-row {
+      position: absolute;
+      right: 10px;
+      bottom: 8px;
+      justify-content: flex-end;
+      margin: 0;
+    }
+
+    .product-detail .next-btn,
+    .product-detail .secondary-btn {
+      min-height: 34px;
+      padding: 6px 10px;
+    }
+
+    .dialogue-box {
+      position: absolute;
+      left: 200px;
+      right: 200px;
+      bottom: 10px;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      height: 250px;
+      min-height: 154px;
+      margin-top: 0;
+      padding: 30px 44px 22px clamp(112px, 12vw, 178px);
+      border: 0;
+      background: url("dialogue-frame.png") center / 100% 100% no-repeat;
+      color: #24150e;
+      box-shadow: none;
+    }
+
+    .dialogue-copy,
+    .dialogue-need {
+      margin: 0;
+      color: #2a170e;
+      font-size: 22px;
+      line-height: 2;
+      letter-spacing: 0.5px;
+    }
+
+    .dialogue-box p {
+      margin: 0;
+    }
+
+    #dialogueContent,
+    #dialogueContent *,
+    .dialogue-box .dialogue-copy,
+    .dialogue-box .dialogue-need,
+    .dialogue-box .feedback-text {
+      font-size: 22px !important;
+      line-height: 2 !important;
+    }
+
+    .dialogue-box .result-line {
+      display: none !important;
+      margin: 0;
+      padding: 0;
+      color: inherit;
+      background: transparent;
+      border: 0;
+      font-size: inherit !important;
+      line-height: inherit !important;
+      font-weight: inherit;
+    }
+
+    .dialogue-need {
+      font-weight: inherit;
+    }
+
+    .dialogue-box strong {
+      font-weight: inherit;
+    }
+
+    .dialogue-box .feedback-panel {
+      grid-column: 1 / -1;
+      margin: 4px 0 0;
+      min-height: 34px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+     .dialogue-box .feedback-text {
+      color: #2a170e;
+      font-size: 22px;
+      line-height: 2;
+      letter-spacing: 0.4px;
+    }
+
+    .dialogue-box .feedback-panel.good .feedback-text {
+      color: #1d5731;
+      font-weight: inherit;
+    }
+
+    .dialogue-box .feedback-panel.bad .feedback-text {
+      color: #7b251a;
+      font-weight: inherit;
+    }
+
+    .dialogue-box .next-row {
+      position: absolute;
+      right: 48px;
+      bottom: 26px;
+      z-index: 20;
+      margin: 0;
+     padding: 0;
+    }
+
+    #dialogueContent {
+      padding-left: 90px;
+      padding-right: 100px;
+      padding-top: 45px;
+    }
+
+    .dialogue-continue {
+      min-width: 96px;
+    }
+
+    .shelf-button.active {
+      border-color: #f0ca72;
+      background: rgba(84, 52, 25, 0.92);
+      filter: brightness(1.08);
+    }
+
+    .after-sale-screen {
+      padding: 12px 24px 12px 118px;
+    }
+
+    .after-sale-panel {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(1060px, calc(100vw - 176px));
+      margin: 0;
+      padding: 18px 20px;
+      border: 4px solid rgba(82, 26, 18, 0.95);
+      background: rgba(239, 217, 176, 0.94);
+      color: #24150e;
+      box-shadow: 0 10px 0 rgba(37, 16, 10, 0.62), 0 22px 36px rgba(0,0,0,0.32);
+    }
+
+    .after-sale-title {
+      color: #4b170f;
+      text-shadow: none;
+    }
+
+    .after-sale-copy,
+    .after-sale-panel .eyebrow {
+      color: #2a170e;
+    }
+
+    .after-sale-panel .result-line {
+      color: #2a170e;
+      background: rgba(255, 242, 190, 0.82);
+    }
+
+    .tool-dock {
+      position: fixed;
+      left: 16px;
+      top: 160px;
+      z-index: 70;
+      display: grid;
+      gap: 16px;
+      width: 117px;
+    }
+
+    .tool-button {
+      display: grid;
+      place-items: center;
+      gap: 3px;
+      min-height: 105px;
+      padding: 9px;
+      border: 2px solid rgba(240, 202, 114, 0.72);
+      color: #f1d283;
+      background: rgba(22, 13, 9, 0.78);
+      box-shadow: 0 5px 0 rgba(47, 25, 14, 0.9), 0 12px 20px rgba(0, 0, 0, 0.28);
+      cursor: pointer;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+
+    .tool-button:hover,
+    .tool-button:focus-visible {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    .tool-icon-wrap {
+      position: relative;
+      width: 72px;
+      height: 72px;
+    }
+
+    .tool-icon-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .book-icon-open,
+    .bag-icon-open {
+      display: none;
+    }
+
+    .after-sale-book-button:hover .book-icon-closed,
+    .after-sale-book-button:focus-visible .book-icon-closed,
+    .bag-button:hover .bag-icon-closed,
+    .bag-button:focus-visible .bag-icon-closed {
+      display: none;
+    }
+
+    .after-sale-book-button:hover .book-icon-open,
+    .after-sale-book-button:focus-visible .book-icon-open,
+    .bag-button:hover .bag-icon-open,
+    .bag-button:focus-visible .bag-icon-open {
+      display: block;
+    }
+
+    .tool-label {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1;
+      text-shadow: 0 2px 0 #140c08;
+    }
+
+    .after-sale-book-button {
+      position: static;
+      width: auto;
+      min-height: 105px;
+      padding: 9px;
+    }
+
+    .book-icon-wrap {
+      width: 72px;
+      height: 72px;
+    }
+
+    .book-label {
+      font-size: 18px;
+    }
+
+    .inventory-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 95;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(8, 5, 4, 0.7);
+    }
+
+    .inventory-dialog {
+      width: min(560px, 92vw);
+      padding: 20px;
+      border: 4px solid rgba(82, 26, 18, 0.95);
+      background: rgba(239, 217, 176, 0.96);
+      color: #24150e;
+      box-shadow: 0 12px 0 rgba(37, 16, 10, 0.62), 0 24px 42px rgba(0,0,0,0.4);
+    }
+
+    .inventory-title {
+      margin: 0 0 10px;
+      color: #4b170f;
+      font-size: 28px;
+    }
+
+    .inventory-copy {
+      color: #2a170e;
+      line-height: 1.55;
+    }
+
+    .ending-screen {
+      display: grid;
+      place-items: center;
+      padding: 30px;
+    }
+
+    .ending-panel {
+      position: relative;
+      z-index: 2;
+      width: min(760px, 100%);
+      padding: 28px;
+      background:
+        linear-gradient(180deg, rgba(32, 19, 12, 0.82), rgba(18, 11, 8, 0.9)),
+        repeating-linear-gradient(90deg, rgba(231, 211, 165, 0.04) 0 10px, transparent 10px 20px);
+    }
+
+    .ending-title {
+      margin-bottom: 12px;
+      color: #f1d283;
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1.15;
+    }
+
+    .ending-copy {
+      color: #ead9b3;
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    .ending-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .achievement-panel {
+      margin: 14px 0 18px;
+      padding: 14px;
+      border: 2px solid rgba(240, 202, 114, 0.46);
+      background: rgba(10, 7, 5, 0.36);
+    }
+
+    .achievement-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .achievement-item {
+      padding: 10px;
+      border: 1px solid rgba(231, 211, 165, 0.28);
+      background: rgba(231, 211, 165, 0.08);
+    }
+
+    .achievement-name {
+      margin: 0 0 5px;
+      color: #f1d283;
+      font-weight: 800;
+    }
+
+    .achievement-desc {
+      margin: 0;
+      color: #ead9b3;
+      line-height: 1.55;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .review-item {
+      padding: 12px;
+      border: 2px solid rgba(231, 211, 165, 0.25);
+      background: rgba(9, 6, 4, 0.34);
+    }
+
+    .review-label {
+      margin: 0 0 6px;
+      color: #cbb98e;
+      font-size: 14px;
+    }
+
+    .review-value {
+      margin: 0;
+      color: #f1d283;
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .restart-btn {
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 920px) {
+      .business-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cover {
+        padding-bottom: 7vh;
+      }
+
+      .stats-bar,
+      .ending-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .customer-panel {
+        min-height: 0;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .app {
+        width: min(100% - 14px, 1180px);
+        padding-top: 8px;
+      }
+
+      .screen {
+        min-height: calc(100vh - 16px);
+      }
+
+      .cover,
+      .business,
+      .ending-screen {
+        padding: 16px;
+      }
+
+      .stats-bar,
+      .product-grid,
+      .ending-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .product-card {
+        min-height: 124px;
+      }
+
+      .customer-name {
+        font-size: 23px;
+      }
+    }
+
+    .dev-panel {
+      position: fixed;
+      right: 12px;
+      top: 12px;
+      z-index: 999;
+      width: min(360px, calc(100vw - 24px));
+      max-height: 55vh;
+      overflow: auto;
+      padding: 12px;
+      border: 2px solid #8f6a2e;
+      background: rgba(21, 12, 8, 0.94);
+      color: #f7dfab;
+      font-size: 12px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    .dev-panel h2 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #ffd86b;
+    }
+
+    .dev-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 8px 0;
+    }
+
+    .dev-row label {
+      display: grid;
+      gap: 3px;
+    }
+
+    .dev-panel select,
+    .dev-panel input,
+    .dev-panel button {
+      border: 1px solid #8f6a2e;
+      background: #2b1a10;
+      color: #f7dfab;
+      padding: 5px 7px;
+      font: inherit;
+    }
+
+    .dev-panel button {
+      cursor: pointer;
+      background: #6f4a1d;
+      color: #fff2bf;
+      font-weight: 700;
+    }
+
+    .dev-state {
+      margin: 8px 0 0;
+      padding: 8px;
+      max-height: 160px;
+      overflow: auto;
+      white-space: pre-wrap;
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 216, 107, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <main id="app" class="app"></main>
+  <aside id="devPanel" class="dev-panel hidden" aria-label="开发测试面板"></aside>
+
+  <script>
+    const DEV_MODE = false;
+
+    // 商品数据：后续可在这里直接扩充新品、售后触发标签或隐藏剧情线索。
+    const products = [
+      {
+        id: "silverCompass",
+        name: "银指南针",
+        price: 57,
+        description: "它会指向你此刻真正需要面对的东西。"
+      },
+      {
+        id: "curseButton",
+        name: "反咒护身银扣",
+        price: 74,
+        description: "别在袍子上的小银扣，普通恶咒靠近时会发热提醒。"
+      },
+      {
+        id: "wolfsbanePotion",
+        name: "狼毒药剂",
+        price: 170,
+        description: "一种复杂而昂贵的魔法药剂，必须在满月前按时服用。它不能解除狼人诅咒，却能帮助服用者在变形后保留一部分理智，尽量避免伤害别人。"
+      },
+      {
+        id: "runeGloves",
+        name: "符文防护手套",
+        price: 119,
+        description: "带有基础防护符文的手套，适合课堂实践和危险物品处理。"
+      },
+      {
+        id: "silentParchment",
+        name: "沉默羊皮纸",
+        price: 34,
+        description: "不会主动泄露内容，也不容易被普通显形咒读出。"
+      },
+      {
+        id: "honestInk",
+        name: "诚实墨水",
+        price: 34,
+        description: "写在纸上的虚假信息会短暂变淡，但不会强迫人说话。"
+      },
+      {
+        id: "routeCard",
+        name: "袖珍活点路线卡",
+        price: 57,
+        description: "能显示附近几条走廊的动态路线，但范围有限。"
+      },
+      {
+        id: "focusPotion",
+        name: "清醒药水",
+        price: 85,
+        description: "能让人在短时间内保持清醒和专注，但使用过量会导致第二天精神崩溃。"
+      },
+      {
+        id: "truthCandy",
+        name: "真心话糖果",
+        price: 51,
+        description: "一种看起来很普通的彩色糖果，吃下后会忍不住说出真话。"
+      },
+      {
+        id: "autoQuill",
+        name: "自动羽毛笔",
+        price: 136,
+        description: "会自动记录听到的内容，也能帮人整理简单笔记，但有时会擅自补充一些它认为应该写上去的话。"
+      },
+      {
+        id: "handOfGlory",
+        name: "光荣之手",
+        price: 300,
+        description: "一只被施了魔法的干枯人手，插上蜡烛后，只有持有者才能看见光芒。"
+      },
+      {
+        id: "skivingSnack",
+        name: "速效逃课糖",
+        price: 68,
+        description: "能制造逼真的流鼻血、发烧、晕眩等症状。"
+      },
+      {
+        id: "maraudersMap",
+        name: "活点地图",
+        price: 0,
+        hidden: true,
+        description: "一张会显示霍格沃茨人员动向的地图。正确卖出袖珍活点路线卡累计 3 次后解锁。"
+      },
+      {
+        id: "replyQuill",
+        name: "双向回信羽毛笔",
+        price: 92,
+        description: "两支羽毛笔共享同一瓶墨水。一边写下的字，另一边会慢慢显现。"
+      },
+      {
+        id: "twoWayMirror",
+        name: "双面镜",
+        price: 500,
+        description: "两面用于视频通话的镜子，被正确的人拿在手中，可能会让他或她看到最想见到的人。"
+      }
+    ];
+
+    const dayLabels = ["第一天", "第二天", "第三天", "第四天", "第五天", "第六天", "第七天"];
+    const timeSlots = ["开店前", "早上", "中午", "下午", "晚上", "打烊后"];
+    const PRODUCTS_PER_SHELF_PAGE = 8;
+    const DIALOGUE_PAGE_BREAK = "[[PAGE]]";
+    const DEFAULT_DIALOGUE_MAX_LENGTH = 95;
+    const RANDOM_CUSTOMER_CHANCE = 0.45;
+    const randomCustomerIds = [
+      "randomBowtruckle",
+      "randomCrookshanks",
+      "randomRita",
+      "borginSpy",
+      "nightWizard"
+    ];
+    const customerTimeSlots = {
+      harryDay1: "下午",
+      hermioneDay2: "早上",
+      lupinDay3: "早上",
+      theodoreDay3: "晚上",
+      theodoreSecond: "晚上",
+      dracoDay4: "晚上",
+      snakeDay5: "早上",
+      harryDay6: "中午",
+      hermioneDay7: "中午",
+      jamesHidden: "晚上",
+      hagridDay1: "早上",
+      borginSpy: "早上",
+      aberforthDay2: "晚上",
+      arianaFirst: "开店前",
+      arianaSecond: "打烊后",
+      nightWizard: "下午",
+      randomBowtruckle: "中午",
+      randomCrookshanks: "下午",
+      randomRita: "中午"
+    };
+    const primaryCustomerIds = ["harryDay1", "hermioneDay2", "lupinDay3", "dracoDay4", "snakeDay5", "harryDay6", "hermioneDay7"];
+
+    // 普通顾客数据：包含主线固定顾客和同日追加的普通顾客。
+    const customers = [
+      {
+        id: "hagridDay1",
+        day: "第一天 · 早上",
+        name: "海格",
+        portrait: "hagrid",
+        description: "海格推门进来时，门铃被撞得响了好几下。<br><br>他努力压低声音，可声音还是像从木桶里滚出来一样：<br><br>“早啊，小家伙。”[[PAGE]]",
+        need: "他从大衣口袋里摸出一小撮沾着泥的羽毛，又很小心地放在柜台上。<br><br>“禁林边有个小家伙受了惊。”<br><br>“它不坏，就是爪子有点尖，碰它的时候容易被抓伤。”<br>[[PAGE]]<br>“我需要一样东西，能让我把它抱起来，又不会吓着它。”",
+        successFeedback: "你把符文防护手套递给海格。<br><br>他低头看了看手套上的符文，又伸出一根粗大的手指，小心翼翼地戳了戳。<br><br>“这不错。”<br>[[PAGE]]“够结实。”<br><br>他把手套塞进大衣口袋，露出一个很大的笑。<br><br>“做得很好，小家伙。”",
+        failFeedback: "海格挠了挠胡子。<br><br>“嗯……这东西挺有意思。”<br><br>“不过我只是想要一双手套，温柔地把它抱起来。”"
+      },
+      {
+        id: "harryDay1",
+        day: "第一天 · 下午",
+        name: "哈利·波特",
+        portrait: "harry",
+        description: "他把兜帽压得很低，像是刚从一场不能写进作业的麻烦里钻出来。",
+        need: "我今晚可能要去一个容易迷路的地方。我想带一个不太显眼的东西，但最好能派上用场。",
+        successFeedback: "哈利低头看着指南针。它轻轻转向他的手心。他沉默了一会儿，说：“我想我明白它的意思了。”",
+        failFeedback: "哈利把商品塞进斗篷，表情像是在接受又一条不完整的线索。店里的柜台警示铃响了半声，听起来不太放心。"
+      },
+      {
+        id: "hermioneDay2",
+        day: "第二天 · 早上",
+        name: "赫敏·格兰杰",
+        portrait: "hermione",
+        description: "她抱着三本书和一卷排得很整齐的清单，目光已经先替你检查了一遍货架。",
+        need: "“明天有草药课，我要确保自己和同伴都不会受伤。”",
+        successFeedback: "赫敏仔细检查了缝线和符文，终于点了点头。“实用、安全，而且没有明显违反校规。我要这副。”",
+        failFeedback: "赫敏的眉毛抬高了一点点，那是比吼叫更可怕的警告。她礼貌地付了钱，但店长账本自动在旁边写下了“需再培训”。"
+      },
+      {
+        id: "lupinDay3",
+        day: "第三天 · 早上",
+        name: "莱姆斯·卢平",
+        portrait: "lupin",
+        description: "卢平站在柜台前，外袍很旧，但很干净。他的指尖轻轻按着袖口，像是在计算某个不能错过的日期。",
+        need: "我需要一瓶药剂。今晚要发生一些事情，我不希望我会伤害到任何人。",
+        successFeedback: "卢平接过药瓶，神情明显松了一点。“谢谢，你是一个很好的店员。”",
+        failFeedback: "卢平仍然温和地道了谢，但他的目光停在货架上许久。“有些东西不能靠安慰、路线或者记录来解决。今晚，我需要的是一瓶真正的药剂。”"
+      },
+      {
+        id: "dracoDay4",
+        day: "第四天 · 晚上",
+        name: "德拉科·马尔福",
+        portrait: "draco",
+        description: "德拉科推门进来时，先看了一眼门框，又看了一眼货架，像是在确认这家店有没有资格接待他。他的袍子整理得很干净，神情却不太放松。",
+        need: "“我要一件不难看、不廉价，最好还能让别人别随便对我动手的东西。”<br><br>“注意，我不是害怕。我只是讨厌没品味的偷袭。”",
+        successFeedback: "德拉科把银扣别在袍子上，故意看了很久才点头。“勉强还算不丢人。”",
+        failFeedback: "德拉科看着你推荐的商品，表情像是听见有人把龙皮手套叫成厨房抹布。“这就是你们店里的品味？”他还是付了钱，但离开时连门铃都响得很不情愿。"
+      },
+      {
+        id: "snakeDay5",
+        day: "第五天 · 早上",
+        name: "一条黑蛇",
+        portrait: "snake",
+        description: "一条黑蛇从门缝里滑了进来。它慢慢爬上柜台，在货架前缓慢移动，像是在嗅一段残留的气息。",
+        need: "它停在墨水瓶前。你突然意识到，它真正想隐藏的也许是来意。",
+        successFeedback: "黑蛇把诚实墨水滴在一张废纸上。<br><br>墨迹像被某种看不见的力量拖拽着，慢慢浮出一个模糊的单词。<br><br><strong>POTTER</strong><br><br>黑蛇的身体僵了一下。<br><br>它没有拿走墨水，只用尾巴推来冰冷的银西可。那些钱币落在柜台上，发出叮叮当当的金属声。<br><br>你忽然就意识到，他是在确认某个人有没有来过。",
+        failFeedback: "黑蛇用尾巴卷走了那件商品。<br><br>它离开时没有回头。<br><br>诚实墨水瓶在货架上轻轻晃了一下。<br><br>之后一切照常进行。"
+      },
+      {
+        id: "harryDay6",
+        day: "第六天 · 中午",
+        name: "哈利·波特",
+        portrait: "harry",
+        description: "他的头发依旧凌乱，看上去有些疲惫，但神情比之前更坚定。",
+        need: "今晚有一场硬仗，我要让自己打起十二分的精神",
+        successFeedback: "哈利握住清醒药水，瓶身在掌心发出细小的蓝光。“只要撑过最关键的那一会儿就够了。”",
+        failFeedback: "哈利收下商品，却没有立刻离开。他像是在等它给出某种答案，可货架只传来木板轻微的叹气声。"
+      },
+      {
+        id: "hermioneDay7",
+        day: "第七天 · 中午",
+        name: "赫敏·格兰杰",
+        portrait: "hermione",
+        description: "她这次只带了一本薄册子，但神情比上次更认真，显然已经排除了三种不合规方案。",
+        need: "我想找一种能判断文字是否可靠的工具。它必须安全、可控，不能强迫任何人说话。",
+        successFeedback: "赫敏在试纸上写了两行互相矛盾的话，虚假的那一行很快淡了下去。她满意地合上墨水瓶：“这确实是我想要的。”",
+        failFeedback: "赫敏盯着商品说明看了三遍，像在努力给它一个改过自新的机会。很遗憾，它没有通过她的伦理审查。"
+      }
+    ];
+
+    const hiddenCustomers = {
+      jamesHidden: {
+        id: "jamesHidden",
+        day: "第一天 · 晚上",
+        name: "詹姆斯·波特",
+        portrait: "james",
+        description: "快打烊时，柜台前的烛火忽然暗了一下。一个戴眼镜的年轻男巫站在门边，身影有些透明。他看了一眼货架，又看向你。",
+        need: "听说你帮了哈利·波特。我想给他留个东西。要在他一个人硬撑的时候，提醒他还有人站在他身后。",
+        successFeedback: "自动羽毛笔在羊皮纸上停了很久，最后写下一行字：你的身后永远有人会支持你。詹姆斯看着那行字，笑了一下，身影在烛光里慢慢变淡。",
+        failFeedback: "詹姆斯看着你推荐的商品，神情没有责备，只是轻轻摇了摇头。“这东西也许有用，但不是我现在想要的。”"
+      },
+      theodoreDay3: {
+        id: "theodoreDay3",
+        day: "第三天 · 晚上",
+        name: "西奥多·诺特",
+        portrait: "theodore",
+        description: "西奥多站在门边阴影里，连脚步声都提前写好了保密协议。",
+        need: "我需要一件东西，能记录路线，又不会把我的去向告诉别人。",
+        successFeedback: "西奥多用指尖压住羊皮纸边缘，确认它没有多余反应。<br><br>“很好。它知道什么时候闭嘴。”",
+        failFeedback: "西奥多看了看商品，又看了看你，沉默得像一只锁上的抽屉。<br><br>“我以为我说得已经足够清楚。”<br><br>他付钱离开后，门口的影子好像比刚才更冷了一些。"
+      },
+      theodoreSecond: {
+        id: "theodoreSecond",
+        day: "第四天 · 晚上",
+        name: "西奥多·诺特",
+        portrait: "theodore",
+        description: "快打烊时，西奥多又一次出现在门口。他径直走到柜台前。",
+        need: "我需要让自己保持清醒。今晚有些事必须处理。",
+        successFeedback: "你从药剂架上取下一瓶浅色药水。瓶身泛着柔和的珍珠光。<br><br>西奥多喝下一小口，微微皱眉。<br><br>“味道不太对。”<br><br>他看向你，停顿了片刻。<br><br>最后，他把药瓶收进了袖中。",
+        failFeedback: "西奥多看着你推荐的商品，神情重新冷了下去。<br><br>“我以为你至少会听懂我的需求。”<br><br>他没有买下它，只把斗篷拉紧，转身离开。那一刻，他又像第一次来店时那样，把所有情绪都收回了阴影里。"
+      },
+      borginSpy: {
+        id: "borginSpy",
+        day: "第一天 · 早上",
+        name: "伯金店的试探者",
+        portrait: "trial",
+        description: "一个穿着旧黑袍的男人走进店里，看货架的眼神像在估算什么秘密情报。",
+        need: "“听说你们店最近有些商品卖得不错。我想买两件能帮人摸清位置、路线和人员动向的东西。价格不是问题。”",
+        successFeedback: "",
+        failFeedback: ""
+      },
+      aberforthDay2: {
+        id: "aberforthDay2",
+        day: "第二天 · 晚上",
+        name: "阿不福思·邓布利多",
+        portrait: "aberforth",
+        description: "一个胡子花白、神情很不耐烦的老人推门进来，袍角带着一点酒馆里的烟味和山羊味。",
+        need: "“我需要一样东西，让该闭嘴的东西闭嘴，让该留下的记录留下。”",
+        successFeedback: "",
+        failFeedback: ""
+      },
+      arianaFirst: {
+        id: "arianaFirst",
+        day: "第三天 · 开店前",
+        name: "阿利安娜·邓布利多",
+        portrait: "ariana",
+        description: "柜台上的烛火忽然安静下来，像是有人轻轻用手护住了火苗。一个半透明的人像浮现在玻璃窗上，是一个金发女孩，神情很轻，很远。",
+        need: "“我想回去看看。”<br><br>“我记得那里有一扇门。”<br><br>“门后有很吵的酒杯声，有羊的味道，还有一个总是不肯好好说话的人。”",
+        successFeedback: "",
+        failFeedback: ""
+      },
+      arianaSecond: {
+        id: "arianaSecond",
+        day: "第四天 · 打烊后",
+        name: "阿利安娜·邓布利多",
+        portrait: "ariana",
+        description: "夜深了，你正在擦拭柜台的玻璃。一声轻快的问好从不远处传来。“晚上好。”你抬起头，是阿利安娜。",
+        need: "“我到了门口。”<br><br>“我听见里面有人在擦杯子。”<br><br>“他骂了一句很难听的话。”<br><br>她轻轻笑了一下。“可是我进不去。我也不知道该不该进去。”",
+        successFeedback: "",
+        failFeedback: ""
+      },
+      nightWizard: {
+        id: "nightWizard",
+        day: "第六天 · 下午",
+        name: "计划夜游的成年巫师",
+        portrait: "nightwizard",
+        description: "一个戴着旧礼帽的成年巫师走进店里。他的眼袋重得要掉到地上了。",
+        need: "“我今晚要去一个很黑的地方，我需要只有我自己能看见的光。”",
+        successFeedback: "",
+        failFeedback: ""
+      },
+      randomBowtruckle: {
+        id: "randomBowtruckle",
+        day: "随机来客",
+        name: "护树罗锅",
+        portrait: "bowtruckle",
+        description: "一根细细的树枝从门缝里探了进来。<br><br>接着，它慢慢站了起来。那是一只护树罗锅，身体像一截会走路的小树枝，眼睛圆圆的，手指又长又尖。<br><br>它看起来很紧张，背后还拖着一片被折断的小叶子。",
+        need: "它发出很轻的“咔哒”声，把一小块树皮放到柜台上。你看见树皮上有几道新鲜划痕。<br><br>它想找一件能保护树木、也能保护靠近树木的人的东西。最好不要再有人因为乱碰枝条，被它抓伤眼睛。",
+        successFeedback: "你把符文防护手套放到柜台上。<br><br>护树罗锅绕着手套走了一圈，用细长的手指轻轻戳了戳上面的符文。蓝色符文亮了一下，它立刻往后跳了半步。<br><br>确认这不是危险物品后，它又小心翼翼地靠近，把手套拖到柜台边缘。它从身后的小叶包里掏出对应数量的银西可。看起来，这是它全部的财产。",
+        failFeedback: "护树罗锅盯着你推荐的商品看了很久。<br><br>然后它抬起细细的手指，指了指那块受伤的树皮。<br><br>它似乎想说明什么，但最后只是把树皮重新抱进怀里，转身离开。"
+      },
+      randomCrookshanks: {
+        id: "randomCrookshanks",
+        day: "随机来客",
+        name: "克鲁克山",
+        portrait: "crookshanks",
+        description: "一只姜黄色的大猫从门缝里挤了进来。<br><br>它脸有点扁，毛蓬得像一小团狮子鬃毛。它跳上柜台，用那双过分聪明的眼睛盯着货架。<br><br>它先嗅了嗅糖果，又绕开药剂，最后用尾巴拍了拍柜台，催促你快点理解它。",
+        need: "它叼来一小撮灰色鼠毛，放在柜台上。<br><br>然后它看向门外，又看向货架。你明白了，它想找一件东西，能帮它确认某个可疑家伙到底躲去了哪里。",
+        successFeedback: "你把袖珍活点路线卡放到柜台上。<br><br>克鲁克山伸出爪子，轻轻按住卡片边缘。几条细线在卡面上迅速亮起，其中一条坚定地延伸向门外。<br><br>克鲁克山眯起眼睛，像是早就猜到了答案。它叼起路线卡旁边的小布袋，把银西可推给你，随后跳下柜台。<br><br>临走前，它回头看了你一眼，认可你终于没有太笨。",
+        failFeedback: "克鲁克山看了看你推荐的商品。<br><br>然后它把那撮鼠毛往你面前推近了一点。像是在提醒你，问题已经说得很清楚了。<br><br>它没有买下商品，只是甩了甩尾巴，从门缝里挤了出去。"
+      },
+      randomRita: {
+        id: "randomRita",
+        day: "随机来客",
+        name: "丽塔·斯基特",
+        portrait: "rita",
+        description: "一个穿着鲜艳长袍的女巫推门进来。<br><br>她的眼镜闪得很亮，手里拿着一只鳄鱼皮手袋，目光在店里扫了一圈。<br><br>她笑得很甜。甜得让人觉得不太安全。",
+        need: "“亲爱的，我需要一件能帮我快速记录采访内容的小东西。”<br><br>“最好能自己写，能抓住重点，能让文章更有趣一点。”她把“有趣”两个字说得很轻。<br><br>“当然，我是一个非常尊重事实的人。”<br><br>柜台上的诚实墨水轻轻晃了一下。",
+        successFeedback: "你把自动羽毛笔递给她。<br><br>羽毛笔刚碰到柜台，就自己立了起来，飞快地在空气里划了一个漂亮的圈。丽塔·斯基特满意地笑了。<br><br>“非常好。”<br><br>“新闻最怕的就是迟钝。”<br><br>她付了钱，把羽毛笔收进手袋。临走前，她回头看了你一眼。<br><br>“如果哪天我写到这家店，我会尽量把你写得讨人喜欢一点。”<br><br>你不确定这算不算威胁。",
+        failFeedback: "丽塔看着你推荐的商品，笑容没有消失。<br><br>但它明显变薄了。<br><br>“亲爱的，这样可不行。”<br><br>她把商品推回来，轻轻叹气。<br><br>“真遗憾。我本来以为这家店会更懂效率。”"
+      }
+    };
+
+    // 售后文案：用顾客每日 id 区分，方便后续添加隐藏顾客和连续事件。
+    const afterSaleTexts = {
+      harryDay1: {
+        good: "哈利第二天匆匆回来，“它没有带我去我想去的地方，但它带我去了我该去的地方。”他付了几枚额外的银西可，好像增加了一些对我的信任",
+        bad: "哈利回来时袍角有焦痕，语气倒还算礼貌。“它确实派上了用场，只是用场和我想的不太一样。”店长的账本啪地合上，仿佛不想听细节。"
+      },
+      hermioneDay2: {
+        good: "赫敏带着完整的实践课记录回来，连商品优缺点都列成了三栏。“防护效果稳定，使用说明清楚。我会推荐给同学，但不会让他们乱用。”",
+        bad: "赫敏把商品说明摊在柜台上，严肃地指出了五处风险和两处措辞漏洞。她没有提高音量，但旁边的羽毛笔已经紧张到自己折了尖。"
+      },
+      lupinDay3: {
+        good: "卢平第二天回来时依旧疲惫，但眼神清明了许多。“药剂起效了。它替我守住了最重要的底线。”",
+        bad: "卢平眼下乌青，神情疲惫，发型看起来也有些凌乱。“我要退货。”"
+      },
+      dracoDay4: {
+        good: "德拉科第二天路过时轻轻朝点门点了点头，那大概是马尔福式的“还不错”。",
+        bad: "德拉科派人送来一张字迹很尖的纸条，上面写着：品味问题比恶咒更难防。售后账本读完后沉默了三秒。"
+      },
+      snakeDay5: {
+        good: "黑蛇悄无声息地回到柜台，尾尖推来一枚冷得过分的银西可。<br><br>诚实墨水在瓶中自己晃了一下，纸上浮出一行很快消失的字：它别有所图。",
+        bad: "黑蛇从货架后探出头，眼睛像两点湿冷的墨。它留下几片鳞和一张被咬出洞的收据，店长的柜台警示铃又裂了一点。"
+      },
+      hermioneDay7: {
+        good: "赫敏回访时拿着一叠校对过的笔记。<br><br>“诚实墨水帮我发现了矛盾。很好，这比偷懒更有用。”",
+        bad: "赫敏表情像刚读完一篇逻辑灾难论文。“我不反对魔法工具，但我反对把麻烦伪装成效率。”"
+      },
+      harryDay6: {
+        good: "哈利匆匆踏进了店门。“它让我撑过了最需要清醒的那几分钟。”",
+        bad: "哈利回来时揉着太阳穴。“它确实提醒了我，只是提醒得有点吵。”自动羽毛笔在旁边写下：危险道具不应承担心理辅导职责。"
+      }
+    };
+
+    // 匹配规则：后续隐藏顾客、连续事件和售后伏笔可以在这里扩展条件。
+    const matchRules = {
+      harryDay1: {
+        productId: "silverCompass"
+      },
+      hermioneDay2: {
+        productId: "runeGloves"
+      },
+      lupinDay3: {
+        productId: "wolfsbanePotion"
+      },
+      theodoreDay3: {
+        productId: "silentParchment"
+      },
+      dracoDay4: {
+        productId: "curseButton"
+      },
+      snakeDay5: {
+        productId: "honestInk"
+      },
+      hermioneDay7: {
+        productId: "honestInk"
+      },
+      harryDay6: {
+        productId: "focusPotion"
+      },
+      hagridDay1: {
+        productId: "runeGloves"
+      },
+      jamesHidden: {
+        productId: "autoQuill"
+      },
+      theodoreSecond: {
+        productId: "focusPotion"
+      },
+      borginSpy: {
+        productId: "truthCandy"
+      },
+      aberforthDay2: {
+        productId: "silentParchment"
+      },
+      arianaFirst: {
+        productId: "silverCompass"
+      },
+      arianaSecond: {
+        productId: "replyQuill"
+      },
+      nightWizard: {
+        productId: "handOfGlory"
+      },
+      randomBowtruckle: {
+        productId: "runeGloves"
+      },
+      randomCrookshanks: {
+        productId: "routeCard"
+      },
+      randomRita: {
+        productId: "autoQuill"
+      }
+    };
+
+    const bundleRules = {
+      borginSpy: ["truthCandy", "skivingSnack"],
+      aberforthDay2: ["silentParchment", "replyQuill"],
+      arianaSecond: ["replyQuill", "honestInk"]
+    };
+
+    // 售后池记录每笔售出的订单；每条订单最多触发一次回访。
+    const afterSalePool = [];
+    const afterSaleRecords = [];
+    const TOTAL_REGULAR_CUSTOMERS = 8;
+    const TOTAL_RECOMMENDATION_SLOTS = 20;
+    const TOTAL_AFTER_SALE_SLOTS = 6;
+    const TOTAL_HIDDEN_EVENTS = 6;
+    const TOTAL_ACHIEVEMENTS = 12;
+
+    const gameState = {
+      currentDayIndex: 0,
+      currentSlotIndex: 0,
+      currentSlot: "开店前",
+      coins: 0,
+      cleanEarnedCoins: 0,
+      travelGoal: 1500,
+      satisfaction: 50,
+      trust: 50,
+      chaos: 0,
+      hasSelectedToday: false,
+      selectedProductId: null,
+      selectedProductIds: [],
+      shelfPage: 0,
+      shelfOpen: false,
+      latestFeedback: "",
+      latestSelectionCorrect: false,
+      correctRecommendations: 0,
+      wrongRecommendations: 0,
+      hiddenEvents: [],
+      activeCustomerId: null,
+      sameDayCustomerActive: false,
+      hiddenEventActive: false,
+      pendingNextDayAfterHidden: false,
+      hagridVisited: false,
+      hagridRetry: false,
+      hagridHintShown: false,
+      toadEnding: false,
+      unlockedJames: false,
+      jamesVisited: false,
+      theodoreTrustUnlocked: false,
+      theodoreDay3Correct: false,
+      theodoreDay4Correct: false,
+      theodoreSecondVisitTriggered: false,
+      theodoreLovePotionAccident: false,
+      theodoreConfessionHandled: false,
+      theodoreConfessionChoice: null,
+      theodoreRoseLetterUnlocked: false,
+      theodoreRoseLetterShown: false,
+      theodoreDateAccepted: false,
+      theodoreDateRefused: false,
+      dracoFirstVisited: false,
+      dracoBoughtCorrectItem: false,
+      dracoTheodoreConflictUnlocked: false,
+      dracoTheodoreHarmonyUnlocked: false,
+      dracoWarningTriggered: false,
+      dracoBribeAccepted: false,
+      dracoBribeRejected: false,
+      jamesGiftPrepared: false,
+      lupinTrustUnlocked: false,
+      lupinMorningEventHandled: false,
+      lupinAlbumEventTriggered: false,
+      lupinAlbumAccepted: false,
+      lupinAlbumAvailable: false,
+      lupinAlbumGivenToHarry: false,
+      lupinAlbumPromptKey: null,
+      lupinHelpedInInjuredHarryEvent: false,
+      jamesDittanyGivenToHarry: false,
+      maraudersWatchUnlocked: false,
+      snakeRoute: null,
+      snakeSaturdayHandled: false,
+      snakeSundayHandled: false,
+      snakeEnding: null,
+      skipHarryDay6: false,
+      routeCardCorrectSales: 0,
+      maraudersMapUnlocked: false,
+      borginVisited: false,
+      borginOutcome: null,
+      borginVisitDayIndex: null,
+      borginFollowupHandled: false,
+      aberforthVisited: false,
+      aberforthCorrect: false,
+      arianaFirstVisited: false,
+      arianaFirstSuccess: false,
+      arianaSecondVisited: false,
+      nightWizardVisited: false,
+      nightWizardRetry: false,
+      randomCustomersVisited: [],
+      randomCustomerSlots: {},
+      achievements: []
+    };
+
+    const app = document.querySelector("#app");
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function getProduct(productId) {
+      return products.find((product) => product.id === productId);
+    }
+
+    function isProductAvailable(product) {
+      if (product.id === "maraudersMap") {
+        return gameState.maraudersMapUnlocked || gameState.routeCardCorrectSales >= 3;
+      }
+
+      return !product.hidden;
+    }
+
+    function getAllProductsTotal() {
+      return products.reduce((sum, product) => sum + product.price, 0);
+    }
+
+    function getDayLabel(dayIndex = gameState.currentDayIndex) {
+      return dayLabels[dayIndex] || `第${dayIndex + 1}天`;
+    }
+
+    function setCurrentSlot(slot) {
+      gameState.currentSlot = slot;
+      gameState.currentSlotIndex = Math.max(0, timeSlots.indexOf(slot));
+    }
+
+    function setSlotForCustomer(customerId) {
+      setCurrentSlot(gameState.randomCustomerSlots[customerId] || customerTimeSlots[customerId] || "早上");
+    }
+
+    function isBundleCustomer(customerId) {
+      return Boolean(bundleRules[customerId]);
+    }
+
+    function isRandomCustomer(customerId) {
+      return randomCustomerIds.includes(customerId);
+    }
+
+    function sameProductSet(actual, expected) {
+      return actual.length === expected.length && expected.every((id) => actual.includes(id));
+    }
+
+    function getSelectedBundleProducts() {
+      return gameState.selectedProductIds.map((id) => getProduct(id)).filter(Boolean);
+    }
+
+    function getCurrentTimeLabel() {
+      return `${getDayLabel()} · ${gameState.currentSlot}`;
+    }
+
+    function getSceneClass(slot = gameState.currentSlot) {
+      return slot === "晚上" || slot === "打烊后" ? "scene-night" : "scene-day";
+    }
+
+    function renderDevPanel() {
+      if (!DEV_MODE) return;
+
+      const panel = document.querySelector("#devPanel");
+      if (!panel) return;
+
+      panel.classList.remove("hidden");
+      panel.innerHTML = `
+        <h2>开发测试面板</h2>
+        <div class="dev-row">
+          <label>日期
+            <select id="devDaySelect">
+              ${dayLabels.map((label, index) => `<option value="${index}" ${index === gameState.currentDayIndex ? "selected" : ""}>${label}</option>`).join("")}
+            </select>
+          </label>
+          <label>时段
+            <select id="devSlotSelect">
+              ${timeSlots.map((slot, index) => `<option value="${index}" ${index === gameState.currentSlotIndex ? "selected" : ""}>${slot}</option>`).join("")}
+            </select>
+          </label>
+          <button type="button" id="devJumpBtn">跳转</button>
+        </div>
+        <div class="dev-row">
+          <label>状态
+            <select id="devStateKey">
+              <option value="jamesVisited">jamesVisited</option>
+              <option value="jamesGiftPrepared">jamesGiftPrepared</option>
+              <option value="theodoreDay3Correct">theodoreDay3Correct</option>
+              <option value="theodoreDay4Correct">theodoreDay4Correct</option>
+              <option value="snakeRoute">snakeRoute</option>
+              <option value="aberforthCorrect">aberforthCorrect</option>
+              <option value="arianaFirstSuccess">arianaFirstSuccess</option>
+            </select>
+          </label>
+          <label>值
+            <select id="devStateValue">
+              <option value="true">true</option>
+              <option value="false">false</option>
+              <option value="null">null</option>
+              <option value="honest">snake: honest</option>
+              <option value="warn">snake: warn</option>
+              <option value="silent">snake: silent</option>
+              <option value="tracking">snake: tracking</option>
+              <option value="none">snake: none</option>
+            </select>
+          </label>
+          <button type="button" id="devSetStateBtn">设置</button>
+        </div>
+        <div class="dev-row">
+          <button type="button" id="devMoneyBtn">+2000 银西可</button>
+          <button type="button" id="devResetBtn">清空存档和状态</button>
+          <button type="button" id="devRefreshBtn">刷新状态</button>
+        </div>
+        <pre class="dev-state" id="devStateOutput"></pre>
+      `;
+
+      document.querySelector("#devJumpBtn").addEventListener("click", devJumpToSlot);
+      document.querySelector("#devSetStateBtn").addEventListener("click", devSetState);
+      document.querySelector("#devMoneyBtn").addEventListener("click", () => {
+        addCoins(2000);
+        refreshCurrentScreen();
+      });
+      document.querySelector("#devResetBtn").addEventListener("click", devResetGame);
+      document.querySelector("#devRefreshBtn").addEventListener("click", updateDevStateOutput);
+      updateDevStateOutput();
+    }
+
+    function updateDevStateOutput() {
+      if (!DEV_MODE) return;
+      const output = document.querySelector("#devStateOutput");
+      if (!output) return;
+
+      const keys = [
+        "currentDayIndex",
+        "currentSlot",
+        "coins",
+        "cleanEarnedCoins",
+        "jamesVisited",
+        "jamesGiftPrepared",
+        "theodoreDay3Correct",
+        "theodoreDay4Correct",
+        "theodoreLovePotionAccident",
+        "snakeRoute",
+        "aberforthCorrect",
+        "arianaFirstSuccess",
+        "lupinMorningEventHandled",
+        "lupinAlbumEventTriggered",
+        "dracoTheodoreConflictUnlocked",
+        "dracoWarningTriggered"
+      ];
+      const snapshot = {};
+      keys.forEach((key) => {
+        snapshot[key] = gameState[key];
+      });
+      output.textContent = JSON.stringify(snapshot, null, 2);
+    }
+
+    function parseDevValue(raw) {
+      if (raw === "true") return true;
+      if (raw === "false") return false;
+      if (raw === "null") return null;
+      return raw;
+    }
+
+    function devSetState() {
+      const key = document.querySelector("#devStateKey").value;
+      const value = parseDevValue(document.querySelector("#devStateValue").value);
+      gameState[key] = value;
+
+      if (key === "theodoreDay3Correct" && value === true) {
+        gameState.theodoreTrustUnlocked = true;
+      }
+
+      if (key === "theodoreDay4Correct" && value === true) {
+        gameState.theodoreSecondVisitTriggered = true;
+        gameState.theodoreLovePotionAccident = true;
+      }
+
+      if (key === "jamesGiftPrepared" && value === true) {
+        gameState.jamesVisited = true;
+      }
+
+      if (key === "aberforthCorrect" && value === true) {
+        gameState.aberforthVisited = true;
+      }
+
+      if (key === "arianaFirstSuccess" && value === true) {
+        gameState.arianaFirstVisited = true;
+      }
+
+      renderDevPanel();
+    }
+
+    function devJumpToSlot() {
+      gameState.currentDayIndex = Number(document.querySelector("#devDaySelect").value);
+      const slotIndex = Number(document.querySelector("#devSlotSelect").value);
+      setCurrentSlot(timeSlots[slotIndex]);
+      gameState.hiddenEventActive = false;
+      gameState.sameDayCustomerActive = false;
+      gameState.pendingNextDayAfterHidden = false;
+      gameState.activeCustomerId = null;
+      gameState.hasSelectedToday = false;
+      gameState.selectedProductId = null;
+      gameState.selectedProductIds = [];
+      gameState.shelfPage = 0;
+      gameState.shelfOpen = false;
+      gameState.latestFeedback = "";
+      renderDevJumpScreen();
+      renderDevPanel();
+    }
+
+    function refreshCurrentScreen() {
+      if (!DEV_MODE) return;
+      renderDevJumpScreen();
+      renderDevPanel();
+    }
+
+    function renderDevJumpScreen() {
+      if (!DEV_MODE) return;
+
+      app.innerHTML = `
+        <section class="screen business">
+          ${renderStats()}
+          <section class="after-sale-screen">
+            <p class="time-label">${getCurrentTimeLabel()}</p>
+            <h1 class="after-sale-heading">开发跳转</h1>
+            <p class="after-sale-copy">已跳到指定日期和时段。这里不会自动触发正式剧情，方便你先设置隐藏状态，再手动测试对应流程。</p>
+            <p class="result-line">当前旅行经费：${gameState.coins}/${gameState.travelGoal}；干净收入：${gameState.cleanEarnedCoins}。</p>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      bindAfterSaleWidget();
+    }
+
+    function devResetGame() {
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+      } catch (error) {
+        console.warn("开发清空存储失败：", error);
+      }
+
+      restartGame();
+    }
+
+    function addCoins(amount, countsAsClean = true) {
+      gameState.coins += amount;
+      if (countsAsClean) {
+        gameState.cleanEarnedCoins += amount;
+      }
+    }
+
+    function recordRecommendation(isCorrect) {
+      if (isCorrect) {
+        gameState.correctRecommendations += 1;
+      } else {
+        gameState.wrongRecommendations += 1;
+      }
+    }
+
+    function recordHiddenEvent(name) {
+      if (!gameState.hiddenEvents.includes(name)) {
+        gameState.hiddenEvents.push(name);
+      }
+    }
+
+    function getActiveCustomer() {
+      if (gameState.activeCustomerId) {
+        const activeRegularCustomer = customers.find((customer) => customer.id === gameState.activeCustomerId);
+        if (activeRegularCustomer) return activeRegularCustomer;
+      }
+
+      if (gameState.activeCustomerId && hiddenCustomers[gameState.activeCustomerId]) {
+        return hiddenCustomers[gameState.activeCustomerId];
+      }
+
+      const primaryCustomerId = primaryCustomerIds[gameState.currentDayIndex];
+      return customers.find((customer) => customer.id === primaryCustomerId) || customers[0];
+    }
+
+    function renderCover() {
+      app.innerHTML = `
+        <section class="screen cover">
+          <button class="cover-start-btn" type="button" id="startBtn">开始打工</button>
+        </section>
+      `;
+
+      document.querySelector("#startBtn").addEventListener("click", () => {
+        renderIntroPage();
+      });
+    }
+
+    function renderIntroPage() {
+      app.innerHTML = `
+        <section class="screen intro-screen" id="introScreen">
+          <div class="intro-card">
+            <p>你是一名正在旅行间隙打零工的年轻魔法师</p>
+            <p>为了攒够去埃及的钱，你来到这家魔法商店应聘店员</p>
+            <p>你只打算在这里打工七天，七天之后，你就要出发</p>
+            <p>你的目标：</p>
+            <p><strong>向顾客推荐合适的魔法商品</strong></p>
+            <p><strong>攒够1500银西可作为旅行经费</strong></p>
+            <p>不过，这家店的顾客似乎都不太普通</p>
+            <p>准备好了吗？</p>
+            <button class="intro-start-btn" type="button" id="handbookBtn">领取入职手册</button>
+          </div>
+        </section>
+      `;
+
+      document.querySelector("#handbookBtn").addEventListener("click", () => {
+        const introScreen = document.querySelector("#introScreen");
+        introScreen.classList.add("fade-out");
+        window.setTimeout(() => {
+          startDay();
+        }, 580);
+      });
+    }
+
+    function renderStats() {
+      return `
+        <section class="stats-bar" aria-label="当前数值">
+          <div class="stat">
+            <div class="stat-label">营业日</div>
+            <div class="stat-value">${getCurrentTimeLabel()}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">旅行经费</div>
+            <div class="stat-value">${gameState.coins}/${gameState.travelGoal}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">顾客满意度</div>
+            <div class="stat-value">${gameState.satisfaction}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">商店声誉</div>
+            <div class="stat-value">${gameState.trust}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">混乱值</div>
+            <div class="stat-value">${gameState.chaos}</div>
+          </div>
+        </section>
+      `;
+    }
+
+    function startDay() {
+      setCurrentSlot("开店前");
+      gameState.hasSelectedToday = false;
+      gameState.selectedProductId = null;
+      gameState.selectedProductIds = [];
+      gameState.shelfPage = 0;
+      gameState.shelfOpen = false;
+      gameState.latestFeedback = "";
+
+      if (triggerBorginFollowup()) {
+        return;
+      }
+
+      if (triggerOpeningScheduledCustomer()) {
+        return;
+      }
+
+      if (triggerSnakeSaturdayEvent()) {
+        return;
+      }
+
+      if (triggerSnakeSundayInjuredHarry()) {
+        return;
+      }
+
+      if (triggerLupinMorningEvent()) {
+        return;
+      }
+
+      const afterSaleEvent = checkAfterSale();
+
+      if (afterSaleEvent) {
+        renderAfterSaleEvent(afterSaleEvent);
+        return;
+      }
+
+      if (triggerRandomWalkInCustomer()) {
+        return;
+      }
+
+      renderOpeningCustomer();
+    }
+
+    function renderOpeningCustomer() {
+      if (triggerTheodoreSecondVisit()) {
+        renderTheodoreSecondVisit();
+        return;
+      }
+
+      setSlotForCustomer(getActiveCustomer().id);
+      renderCustomer();
+    }
+
+    function triggerOpeningScheduledCustomer() {
+      if (gameState.currentDayIndex === 0 && !gameState.hagridVisited) {
+        showHagridCustomer();
+        return true;
+      }
+
+      if (gameState.currentDayIndex === 2 && gameState.aberforthCorrect && !gameState.arianaFirstVisited) {
+        showExtraCustomer("arianaFirst", false);
+        return true;
+      }
+
+      return false;
+    }
+
+    function showHagridCustomer() {
+      gameState.hiddenEventActive = false;
+      gameState.sameDayCustomerActive = true;
+      gameState.pendingNextDayAfterHidden = false;
+      gameState.activeCustomerId = "hagridDay1";
+      gameState.hagridVisited = true;
+      gameState.hagridRetry = false;
+      gameState.hasSelectedToday = false;
+      gameState.selectedProductId = null;
+      gameState.selectedProductIds = [];
+      gameState.shelfPage = 0;
+      gameState.shelfOpen = false;
+      gameState.latestFeedback = "";
+      renderCustomer();
+      armHagridShelfTip();
+    }
+
+    function armHagridShelfTip() {
+      if (gameState.hagridHintShown) return;
+      window.setTimeout(() => {
+        const screen = document.querySelector(".business");
+        if (!screen || getActiveCustomer().id !== "hagridDay1") return;
+
+        const showOnFirstClick = (event) => {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          showHagridShelfTip();
+        };
+
+        screen.addEventListener("click", showOnFirstClick, {
+          once: true,
+          capture: true
+        });
+      }, 0);
+    }
+
+    function showHagridShelfTip() {
+      if (gameState.hagridHintShown) return;
+      gameState.hagridHintShown = true;
+
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "hagridShelfTipModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">第一位顾客</h2>
+          <p class="confirm-sale-copy">点击左边的“shelf”查看货架。</p>
+          <p class="confirm-sale-copy">为顾客推荐他所需要的商品吧。</p>
+          <div class="confirm-row">
+            <button class="next-btn" type="button" id="closeHagridShelfTip">知道了</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      document.querySelector("#closeHagridShelfTip").addEventListener("click", () => modal.remove());
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          modal.remove();
+        }
+      });
+    }
+
+    function triggerRandomWalkInCustomer() {
+      if (triggerTheodoreSecondVisit()) {
+        return false;
+      }
+
+      const availableIds = randomCustomerIds.filter((id) => !gameState.randomCustomersVisited.includes(id));
+
+      // 三位随机顾客都已经来过，就不再触发
+      if (!availableIds.length) {
+        return false;
+      }
+
+      // 从今天算起，后面还剩多少天
+      const daysLeftIncludingToday = dayLabels.length - gameState.currentDayIndex;
+
+      // 如果剩下的天数已经不够随便错过了，就强制安排随机顾客出现
+      // 这样可以保证克鲁克山、护树罗锅、丽塔每局都会各出现一次
+      const mustAppearNow = availableIds.length >= daysLeftIncludingToday - 1;
+
+      // 还没到必须出现的时候，仍然保留一点随机性
+      if (!mustAppearNow && Math.random() > RANDOM_CUSTOMER_CHANCE) {
+        return false;
+      }
+
+      // 从还没出现过的随机顾客里抽一个
+      const customerId = availableIds[Math.floor(Math.random() * availableIds.length)];
+
+      // 随机安排在中午或下午
+      const slot = Math.random() < 0.5 ? "中午" : "下午";
+
+      // 记录这个顾客已经来过，避免重复出现
+      gameState.randomCustomersVisited.push(customerId);
+      gameState.randomCustomerSlots[customerId] = slot;
+
+      showWalkInCustomer(customerId);
+      return true;
+    }
+    function showWalkInCustomer(customerId) {
+      gameState.hiddenEventActive = true;
+      gameState.pendingNextDayAfterHidden = false;
+      gameState.activeCustomerId = customerId;
+      gameState.hasSelectedToday = false;
+      gameState.selectedProductId = null;
+      gameState.selectedProductIds = [];
+      gameState.shelfPage = 0;
+      gameState.latestFeedback = "";
+      renderCustomer();
+    }
+
+    function triggerBorginFollowup() {
+      if (
+        gameState.borginFollowupHandled ||
+        !gameState.borginOutcome ||
+        gameState.borginVisitDayIndex === null ||
+        gameState.currentDayIndex <= gameState.borginVisitDayIndex
+      ) {
+        return false;
+      }
+
+      gameState.borginFollowupHandled = true;
+
+      if (gameState.borginOutcome === "fooled") {
+        addCoins(50);
+        gameState.trust = clamp(gameState.trust + 5, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+        renderBorginFollowupEvent(
+          "店长嘉奖",
+          "一只猫头鹰飞了进来，腿上绑着一封信，停在柜台上。<br><br>“昨天那个翻倒巷来的家伙，在翻倒巷一边流鼻血，一边嚷嚷着要让翻倒巷和对角巷里的杂货店全部倒闭。不知道被谁打了。”<br><br>“干得不错。下次遇到这种人，也别把真东西卖出去。”",
+          "结果：旅行经费 +50，商店声誉 +5，混乱值 -2。"
+        );
+        return true;
+      }
+
+      if (gameState.borginOutcome === "leakedRoute") {
+        gameState.coins = Math.max(0, gameState.coins - 150);
+        gameState.trust = clamp(gameState.trust - 12, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 12, 0, 100);
+        renderBorginFollowupEvent(
+          "店长吼叫信",
+          "一封红色信件猛地撞开窗户，落在柜台上。它自己撕开封口，店长的声音几乎炸翻货架：<br><br>“你把路线卡卖给翻倒巷的人了？”<br><br>“你知道那东西能暴露多少路线和顾客习惯吗？”<br><br>“你应该为你的愚蠢付出代价。”",
+          "结果：旅行经费 -150，商店声誉 -12，混乱值 +12。"
+        );
+        return true;
+      }
+
+      return false;
+    }
+
+    function renderBorginFollowupEvent(title, text, resultText) {
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel">
+            <p class="eyebrow">${getDayLabel()} · 开店前</p>
+            <h1 class="after-sale-title">${title}</h1>
+            <p class="after-sale-copy">${text}</p>
+            <p class="result-line">${resultText}</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="continueBusinessBtn">继续营业</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      afterSaleRecords.push({
+        returnDay: getDayLabel(gameState.currentDayIndex),
+        customerName: "店长",
+        productName: "伯金店试探者事件",
+        feedback: text,
+        resultText,
+        isCorrect: title === "店长嘉奖"
+      });
+
+      document.querySelector("#continueBusinessBtn").addEventListener("click", startDay);
+      bindAfterSaleWidget();
+    }
+
+    function showExtraCustomer(customerId, pendingNextDay = false) {
+      recordHiddenEvent(hiddenCustomers[customerId].name);
+      gameState.hiddenEventActive = true;
+      gameState.pendingNextDayAfterHidden = pendingNextDay;
+      gameState.activeCustomerId = customerId;
+      gameState.hasSelectedToday = false;
+      gameState.selectedProductId = null;
+      gameState.selectedProductIds = [];
+      gameState.shelfPage = 0;
+      gameState.latestFeedback = "";
+      renderCustomer();
+    }
+
+    function triggerLupinMorningEvent() {
+      if (gameState.currentDayIndex !== 3 || gameState.lupinMorningEventHandled) return false;
+
+      const order = afterSalePool.find((item) => item.customerId === "lupinDay3");
+      if (!order || !order.isCorrect) return false;
+
+      order.hasReturned = true;
+      gameState.lupinMorningEventHandled = true;
+      addCoins(5);
+      gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+      gameState.trust = clamp(gameState.trust + 4, 0, 100);
+      gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+
+      const record = {
+        returnDay: getDayLabel(gameState.currentDayIndex),
+        customerName: order.customerName,
+        productName: order.productName,
+        feedback: afterSaleTexts.lupinDay3.good,
+        resultText: "结果：旅行经费 +5，满意度 +6，商店声誉 +4，混乱值 -2。",
+        isCorrect: true
+      };
+      afterSaleRecords.push(record);
+
+      if (gameState.jamesVisited && gameState.jamesGiftPrepared) {
+        renderLupinAlbumEvent(record);
+      } else {
+        renderLupinMorningFollowup(record);
+      }
+      return true;
+    }
+
+    function renderLupinMorningFollowup(record) {
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel good">
+            <p class="eyebrow">${getDayLabel()} · 开店前</p>
+            <h1 class="after-sale-title">卢平售后</h1>
+            <p class="after-sale-copy">${record.customerName}回来反馈了“${record.productName}”。</p>
+            <p class="after-sale-copy">${record.feedback}</p>
+            <p class="result-line">${record.resultText}</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="continueBusinessBtn">继续营业</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#continueBusinessBtn").addEventListener("click", renderOpeningCustomer);
+      bindAfterSaleWidget();
+    }
+
+    function renderLupinAlbumEvent(record) {
+      recordHiddenEvent("卢平相册");
+      gameState.lupinAlbumEventTriggered = true;
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel good">
+            <p class="eyebrow">${getDayLabel()} · 开店前</p>
+            <h1 class="after-sale-title">卢平售后与旧相册</h1>
+            <p class="after-sale-copy">${record.customerName}回来反馈了“${record.productName}”。</p>
+            <p class="after-sale-copy">${record.feedback}</p>
+            <p class="result-line">${record.resultText}</p>
+            <p class="after-sale-copy">卢平没有立刻离开。他把一个旧皮箱放到柜台旁，神情比上次更放松一些。</p>
+            <p class="after-sale-copy">“我听说你最近也见过……一位老朋友。”他停顿了一下，“他托我给你带句话：谢谢你还记得我们。”</p>
+            <p class="after-sale-copy">然后卢平从箱子里取出一本旧相册。相册边角已经磨旧，封皮却被保存得很好。里面有几张詹姆斯、小天狼星和卢平自己在霍格沃茨时的合照。</p>
+            <p class="after-sale-copy">照片里的人还在动，年轻的詹姆斯正把手搭在小天狼星肩上，卢平站在旁边，看起来像是在无奈地劝他们别惹麻烦。</p>
+            <p class="after-sale-copy">“这本相册，本来是想等哈利毕业时给他的。”</p>
+            <p class="after-sale-copy">“但现在我觉得，也许让他早一点知道他不是一个人——会更重要。”</p>
+            <p class="result-line">卢平郑重地请你将相册转交给哈利。</p>
+            <div class="confirm-row">
+              <button class="next-btn" type="button" id="acceptLupinAlbumBtn">接受相册</button>
+              <button class="secondary-btn" type="button" id="refuseLupinAlbumBtn">婉拒相册</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#acceptLupinAlbumBtn").addEventListener("click", () => handleLupinAlbumChoice("accept"));
+      document.querySelector("#refuseLupinAlbumBtn").addEventListener("click", () => handleLupinAlbumChoice("refuse"));
+      bindAfterSaleWidget();
+    }
+
+    function handleLupinAlbumChoice(choice) {
+      gameState.lupinAlbumEventTriggered = true;
+
+      if (choice === "accept") {
+        gameState.trust = clamp(gameState.trust + 10, 0, 100);
+        gameState.satisfaction = clamp(gameState.satisfaction + 8, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+        gameState.lupinAlbumAccepted = true;
+        gameState.lupinAlbumAvailable = true;
+        unlockAchievement("月亮脸的信任", "卢平把一本旧相册托付给了你。");
+        renderLupinAlbumResult(
+          "接受相册",
+          "你接过那本旧相册。<br><br>相册比看起来更沉，不只是因为里面夹着旧照片，也因为它装着一些来不及亲口说出的东西。<br><br>卢平的神情明显柔和下来。<br><br>“谢谢。哈利会需要这个。”<br><br><span class=\"result-line\">商店声誉 +10，顾客满意度 +8，混乱值 -2。</span>"
+        );
+        return;
+      }
+
+      gameState.satisfaction = clamp(gameState.satisfaction + 3, 0, 100);
+      gameState.lupinAlbumAccepted = false;
+      gameState.lupinAlbumAvailable = false;
+      renderLupinAlbumResult(
+        "婉拒相册",
+        "你没有接过相册。<br><br>你告诉卢平，也许这样重要的东西，还是由他亲手交给哈利更好。<br><br>卢平沉默了一会儿，然后轻轻点头。<br><br>“也许你说得对。”<br><br>他把相册重新放回旧皮箱里，动作仍然很温和，只是眼神有些黯淡。<br><br><span class=\"result-line\">顾客满意度 +3，商店声誉不变，混乱值不变。</span>"
+      );
+    }
+
+    function renderLupinAlbumResult(title, text) {
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel good">
+            <p class="eyebrow">${getDayLabel()} · 开店前</p>
+            <h1 class="after-sale-title">${title}</h1>
+            <p class="after-sale-copy">${text}</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="continueBusinessBtn">继续营业</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#continueBusinessBtn").addEventListener("click", () => {
+        if (shouldTriggerDracoWarning()) {
+          renderDracoWarningEvent();
+          return;
+        }
+
+        startDay();
+      });
+      bindAfterSaleWidget();
+    }
+
+    function shouldTriggerDracoWarning() {
+      return gameState.dracoTheodoreConflictUnlocked
+        && gameState.theodoreConfessionHandled
+        && !gameState.dracoWarningTriggered;
+    }
+
+    function renderDracoWarningEvent() {
+      setCurrentSlot("晚上");
+      recordHiddenEvent("德拉科");
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel">
+            <p class="eyebrow">${getDayLabel()} · 晚上</p>
+            <h1 class="after-sale-title">500 银西可</h1>
+            <p class="after-sale-copy">西奥多的话音刚落，门口的铃忽然响了一下。</p>
+            <p class="after-sale-copy">德拉科站在门外，袍角被风吹起一点，脸色比昨晚更冷。他先看向西奥多。</p>
+            <p class="after-sale-copy">“所以这就是你最近变得奇怪的原因？”</p>
+            <p class="after-sale-copy">西奥多的表情在一瞬间冷了下来。“这与你无关。”</p>
+            <p class="after-sale-copy">德拉科笑了一下。“我以为诺特家的人至少知道，有些感情不该被摆在柜台上。”</p>
+            <p class="after-sale-copy">这句话比嘲讽更尖锐。西奥多没有退后，但他的手指明显收紧了。</p>
+            <p class="after-sale-copy">德拉科这才看向你。他把一只钱袋放在柜台上。银西可撞在一起，声音清脆得刺耳。</p>
+            <p class="after-sale-copy">“500 银西可。”</p>
+            <p class="after-sale-copy">“拿着它，离他远一点。”</p>
+            <div class="confirm-row">
+              <button class="next-btn" type="button" id="acceptDracoBribeBtn">收下 500 银西可</button>
+              <button class="secondary-btn" type="button" id="rejectDracoBribeBtn">拒绝 500 银西可</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#acceptDracoBribeBtn").addEventListener("click", () => handleDracoBribeChoice("accept"));
+      document.querySelector("#rejectDracoBribeBtn").addEventListener("click", () => handleDracoBribeChoice("reject"));
+      bindAfterSaleWidget();
+    }
+
+    function handleDracoBribeChoice(choice) {
+      gameState.dracoWarningTriggered = true;
+
+      if (choice === "accept") {
+        addCoins(500, false);
+        gameState.satisfaction = clamp(gameState.satisfaction - 12, 0, 100);
+        gameState.trust = clamp(gameState.trust - 10, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 12, 0, 100);
+        gameState.dracoBribeAccepted = true;
+        gameState.dracoBribeRejected = false;
+        gameState.theodoreRoseLetterUnlocked = false;
+        gameState.theodoreDateAccepted = false;
+        const achievementNotice = unlockAchievement("给你500银西可，离开他", "德拉科用 500 银西可买走了一个答案，而你真的收下了。");
+        renderDracoBribeResult(
+          "收下 500 银西可",
+          `你看着柜台上的钱袋，最后把它收了起来。<br><br>德拉科的表情没有变，但眼神里多了一点冷淡的胜利感。<br><br>西奥多没有说话。过了很久，他轻轻点了一下头。<br><br>“原来如此。”<br><br>他说完转身离开，斗篷边缘擦过门框，没有再回头。<br><br>德拉科看着他的背影，脸上的表情像是赢了一局自己也不想赢的棋。<br><br><span class="result-line">结果：旅行经费 +500，顾客满意度 -12，商店声誉 -10，混乱值 +12。</span>${achievementNotice ? `<br><strong>${achievementNotice}</strong>` : ""}`
+        );
+        return;
+      }
+
+      gameState.satisfaction = clamp(gameState.satisfaction + 8, 0, 100);
+      gameState.trust = clamp(gameState.trust + 10, 0, 100);
+      gameState.chaos = clamp(gameState.chaos - 5, 0, 100);
+      gameState.dracoBribeAccepted = false;
+      gameState.dracoBribeRejected = true;
+      const achievementNotice = unlockAchievement("这里不卖人", "你拒绝了德拉科的 500 银西可，也拒绝让西奥多被别人定价。");
+      renderDracoBribeResult(
+        "拒绝 500 银西可",
+        `你没有碰那只钱袋。<br><br>“这里卖商品，不卖人。”<br><br>柜台上的诚实墨水轻轻晃了一下，对这句话表示赞同。<br><br>德拉科的脸色变了。<br><br>“你知道自己拒绝了什么吗？”<br><br>西奥多忽然开口：“她知道。”<br><br>他说得很轻，却很清楚。德拉科看了他一眼，最后只是把钱袋重新拿回去。<br><br>“随你们。”<br><br>门铃再次响起。<br><br>西奥多站在原地，看向你，眼神比刚才清醒得多。<br><br>“你本来可以拿走那笔钱。”<br><br>你回答：“我知道我想要什么。”<br><br>他沉默了一会儿，低声说：“我会记得。”<br><br><span class="result-line">结果：顾客满意度 +8，商店声誉 +10，混乱值 -5。</span>${achievementNotice ? `<br><strong>${achievementNotice}</strong>` : ""}`
+      );
+    }
+
+    function renderDracoBribeResult(title, text) {
+      setCurrentSlot("晚上");
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel">
+            <p class="eyebrow">${getDayLabel()} · 晚上</p>
+            <h1 class="after-sale-title">${title}</h1>
+            <p class="after-sale-copy">${text}</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="dracoWarningNextBtn">继续营业</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#dracoWarningNextBtn").addEventListener("click", nextDay);
+      bindAfterSaleWidget();
+    }
+
+    function shouldTriggerDracoTheodoreScene() {
+      return gameState.currentDayIndex === 3
+        && gameState.dracoFirstVisited
+        && gameState.theodoreDay3Correct
+        && gameState.theodoreSecondVisitTriggered
+        && !gameState.dracoTheodoreConflictUnlocked
+        && !gameState.dracoTheodoreHarmonyUnlocked;
+    }
+
+    function renderDracoTheodoreScene() {
+      setCurrentSlot("晚上");
+      const isConflict = gameState.theodoreDay4Correct;
+      recordHiddenEvent("德拉科");
+
+      if (isConflict) {
+        gameState.dracoTheodoreConflictUnlocked = true;
+        gameState.dracoTheodoreHarmonyUnlocked = false;
+        gameState.chaos = clamp(gameState.chaos + 5, 0, 100);
+      } else {
+        gameState.dracoTheodoreConflictUnlocked = false;
+        gameState.dracoTheodoreHarmonyUnlocked = true;
+        gameState.satisfaction = clamp(gameState.satisfaction + 2, 0, 100);
+        gameState.trust = clamp(gameState.trust + 2, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+      }
+
+      const body = isConflict
+        ? `
+          <p class="after-sale-copy">德拉科买完银扣后，没有立刻离开。他正低头整理袖口，银扣在袍子上泛着一点冷光。</p>
+          <p class="after-sale-copy">就在这时，货架旁传来轻微的动静。西奥多还没有走。他站在药剂架旁，神情很冷淡。</p>
+          <p class="after-sale-copy">德拉科抬眼看见他，嘴角慢慢扬了一下。“你最近来这里来得太勤了，诺特。”</p>
+          <p class="after-sale-copy">西奥多没有回答。店里的烛火轻轻晃了一下。</p>
+          <p class="after-sale-copy">德拉科又看向你，笑意很浅。“有些人从小就被教导，不该过多地接触不合适的人。”</p>
+          <p class="after-sale-copy">这句话没有说完，但每个人都听懂了。西奥多终于开口：“够了，德拉科。”</p>
+          <p class="result-line">结果：混乱值 +5。</p>
+        `
+        : `
+          <p class="after-sale-copy">德拉科买完银扣后，目光落到药剂架旁。</p>
+          <p class="after-sale-copy">西奥多正站在那里，神情已经恢复成最初那种冷淡的样子。他没有拿走那瓶清醒药水，也没有再看柜台。</p>
+          <p class="after-sale-copy">德拉科看了看他，又看了看你身后的货架。“看来你也不是什么都信。”</p>
+          <p class="after-sale-copy">西奥多淡淡地说：“偶尔而已。”</p>
+          <p class="after-sale-copy">德拉科哼笑了一声。“至少这点还算聪明。”西奥多没有反驳。</p>
+          <p class="result-line">结果：顾客满意度 +2，商店声誉 +2，混乱值 -2。</p>
+        `;
+
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel">
+            <p class="eyebrow">${getDayLabel()} · 晚上</p>
+            <h1 class="after-sale-title">${isConflict ? "德拉科和西奥多的交锋" : "短暂和谐"}</h1>
+            ${body}
+            <div class="next-row">
+            <button class="next-btn" type="button" id="dracoSceneNextBtn">下一位顾客</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#dracoSceneNextBtn").addEventListener("click", advanceToNextDay);
+      bindAfterSaleWidget();
+    }
+
+    function maybeTriggerAlbumGiftForHarry(nextCallback, context = "normal") {
+      if (!gameState.lupinAlbumAvailable || gameState.lupinAlbumGivenToHarry) {
+        nextCallback();
+        return;
+      }
+
+      const promptKey = `${gameState.currentDayIndex}:${getActiveCustomer().id}:${context}`;
+      if (gameState.lupinAlbumPromptKey === promptKey) {
+        nextCallback();
+        return;
+      }
+
+      gameState.lupinAlbumPromptKey = promptKey;
+
+      renderAlbumGiftModal(nextCallback, context);
+    }
+
+    function renderAlbumGiftModal(nextCallback, context = "normal") {
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "albumGiftModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">旧相册</h2>
+          <p class="confirm-sale-copy">你忽然想起卢平托付给你的那本旧相册。</p>
+          <p class="confirm-sale-copy">相册正安静地放在柜台下面。封皮边缘微微发热，像是里面的照片知道哈利就在附近。</p>
+          <p class="confirm-sale-copy">是否把相册交给哈利？</p>
+          <div class="confirm-row">
+            <button class="next-btn" type="button" id="giveAlbumBtn">把相册交给哈利</button>
+            <button class="secondary-btn" type="button" id="keepAlbumBtn">暂时不交</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      document.querySelector("#giveAlbumBtn").addEventListener("click", () => {
+        modal.remove();
+        handleAlbumGiftChoice(true, nextCallback, context);
+      });
+
+      document.querySelector("#keepAlbumBtn").addEventListener("click", () => {
+        modal.remove();
+        handleAlbumGiftChoice(false, nextCallback, context);
+      });
+    }
+
+    function handleAlbumGiftChoice(give, nextCallback, context = "normal") {
+      if (!give) {
+        nextCallback();
+        return;
+      }
+
+      gameState.satisfaction = clamp(gameState.satisfaction + 5, 0, 100);
+      gameState.trust = clamp(gameState.trust + 4, 0, 100);
+      gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+      gameState.lupinAlbumGivenToHarry = true;
+      gameState.lupinAlbumAvailable = false;
+      gameState.lupinAlbumPromptKey = null;
+      unlockAchievement("特殊的礼物", "你把本该等到毕业时才交给哈利的旧相册，提前交到了他手里。");
+      checkMaraudersWatchAchievement();
+
+      const albumText = context === "injured"
+        ? "哈利已经处理好伤口，正准备离开。<br><br>你叫住他，把那本旧相册递过去。卢平没有说话，只是站在一旁。<br><br>相册翻开的那一刻，照片里的詹姆斯正冲镜头大笑，小天狼星在旁边伸手去抢什么，年轻的卢平站在最后，想装作自己不认识他们，却还是忍不住笑了。<br><br>哈利的表情慢慢变了，是一种终于看见了某个空白位置的神情。<br><br>卢平低声说：“他们本来都该亲自告诉你的。”<br><br>哈利看着相册，声音很低：“但现在我知道了。”"
+        : "你把旧相册推到哈利面前。<br><br>哈利一开始没有立刻伸手。直到相册自己翻开一页，照片里的詹姆斯正笑着回头。<br><br>哈利的手停在半空。他看着照片里的詹姆斯、小天狼星和卢平，很久都没有说话。<br><br>最后，他小心地合上相册，声音很轻：“我不知道他们也会这样笑。”<br><br>你说：“卢平让我转交给你。他说，也许你应该早点知道——你不是只有一个人。”<br><br>哈利低头看着相册，过了很久才说：“谢谢。”";
+
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "albumGiftResultModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">特殊的礼物</h2>
+          <p class="confirm-sale-copy">${albumText}</p>
+          <p class="result-line">顾客满意度 +5，商店声誉 +4，混乱值 -2。</p>
+          <div class="next-row">
+            <button class="next-btn" type="button" id="albumGiftResultBtn">继续</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      document.querySelector("#albumGiftResultBtn").addEventListener("click", () => {
+        modal.remove();
+        nextCallback();
+      });
+    }
+
+    function renderLupinDittanyAssist(nextCallback, hasJamesDittany) {
+      gameState.satisfaction = clamp(gameState.satisfaction + 2, 0, 100);
+      gameState.trust = clamp(gameState.trust + 3, 0, 100);
+      gameState.chaos = clamp(gameState.chaos - 4, 0, 100);
+      gameState.lupinHelpedInInjuredHarryEvent = true;
+
+      const assistText = hasJamesDittany
+        ? "哈利伤口逐渐愈合时，柜台旁的烛火忽然轻轻一晃。<br><br>卢平不知什么时候站在了柜台旁。他看着那瓶白鲜香精，微笑了一下。<br><br>“看来有人比我更早想到。”<br><br>他从旧皮箱里取出一小袋银西可，放在柜台上。<br><br>“这是替波特付的。”"
+        : "就在哈利准备转身时，门口响起了很轻的脚步声。<br><br>卢平走进来，手里拿着一瓶颜色更浅的药剂。<br><br>“等等，哈利。”<br><br>哈利愣了一下：“教授？”<br><br>卢平把药剂放到柜台上。“改良版白鲜香精。不仅能缓解伤势，还能短暂提升防御力。你父亲当年也总是把自己弄伤。”<br><br>他顿了顿，声音低了些。<br><br>“我答应过要照顾好你。”";
+
+      if (hasJamesDittany) {
+        addCoins(100);
+        gameState.satisfaction = clamp(gameState.satisfaction + 3, 0, 100);
+        gameState.trust = clamp(gameState.trust + 5, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 3, 0, 100);
+      }
+
+      checkMaraudersWatchAchievement();
+
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "lupinAssistModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">卢平的援助</h2>
+          <p class="confirm-sale-copy">${assistText}</p>
+          <p class="result-line">${hasJamesDittany ? "旅行经费 +100，顾客满意度 +3，商店声誉 +5，混乱值 -3。" : "顾客满意度 +2，商店声誉 +3，混乱值 -4。"}</p>
+          <div class="next-row">
+            <button class="next-btn" type="button" id="lupinAssistNextBtn">继续</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      document.querySelector("#lupinAssistNextBtn").addEventListener("click", () => {
+        modal.remove();
+        nextCallback();
+      });
+    }
+
+    function checkMaraudersWatchAchievement() {
+      if (
+        gameState.jamesGiftPrepared &&
+        gameState.jamesDittanyGivenToHarry &&
+        gameState.lupinHelpedInInjuredHarryEvent &&
+        gameState.lupinAlbumGivenToHarry &&
+        !gameState.maraudersWatchUnlocked
+      ) {
+        gameState.maraudersWatchUnlocked = true;
+        unlockAchievement("掠夺者的守望", "詹姆斯留下的白鲜香精治好了哈利，卢平托付的旧相册让哈利看见了自己从未真正失去的守护。");
+      }
+    }
+
+    function triggerSnakeSundayInjuredHarry() {
+      if (gameState.currentDayIndex !== 6 || gameState.snakeRoute !== "silent" || gameState.snakeSundayHandled) {
+        return false;
+      }
+
+      renderInjuredHarryEvent();
+      return true;
+    }
+
+    function renderInjuredHarryEvent() {
+      setCurrentSlot("早上");
+      gameState.snakeSundayHandled = true;
+      if (gameState.jamesGiftPrepared) {
+        recordHiddenEvent("白鲜香精");
+      }
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel bad">
+            <p class="eyebrow">${getDayLabel()} · 早上</p>
+            <h1 class="after-sale-title">哈利终于来了</h1>
+            <p class="after-sale-copy">${getDayLabel()}早上，哈利终于来了。</p>
+            <p class="after-sale-copy">他身上带着伤，袍角沾着泥，手背上有几道被什么东西擦过的血痕。</p>
+            <p class="after-sale-copy">他扶着柜台，声音很低：“你这里……有没有治疗的药？”</p>
+            <p class="after-sale-copy">你看向货架。没有。店里没有能够立刻处理这种伤的药。哈利的眼神暗了一点。</p>
+            ${gameState.jamesGiftPrepared ? `
+              <p class="result-line">你忽然听见柜台下面传来一声很轻的玻璃碰撞声。那里多了一瓶白鲜香精，瓶底压着一小片羊皮纸，上面是自动羽毛笔留下的字迹：“给他。”</p>
+              <div class="confirm-row">
+                <button class="next-btn" type="button" id="giveDittanyBtn">把白鲜香精给哈利</button>
+                <button class="secondary-btn" type="button" id="keepDittanyBtn">不给</button>
+              </div>
+            ` : `
+              <p class="result-line">${gameState.lupinAlbumAccepted ? "你没有可以拿出来的药，但那本旧相册让你忽然想起卢平。" : "你没有可以拿出来的药。哈利一瘸一拐地离开了商店。"}</p>
+              <div class="next-row">
+                <button class="next-btn" type="button" id="injuredHarryNextBtn">${gameState.lupinAlbumAccepted ? "等待一下" : "继续营业"}</button>
+              </div>
+            `}
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      if (gameState.jamesGiftPrepared) {
+        document.querySelector("#giveDittanyBtn").addEventListener("click", () => handleDittanyChoice(true));
+        document.querySelector("#keepDittanyBtn").addEventListener("click", () => handleDittanyChoice(false));
+      } else {
+        if (gameState.lupinAlbumAccepted) {
+          document.querySelector("#injuredHarryNextBtn").addEventListener("click", () => {
+            renderLupinDittanyAssist(() => {
+              maybeTriggerAlbumGiftForHarry(() => {
+                renderInjuredHarryResult(
+                  "卢平和哈利离开",
+                  "卢平帮哈利处理了伤口。哈利安静地看着卢平替他包好手背。<br><br>卢平和哈利一起离开。走到门口时，卢平回头向你点了点头。他没有说更多的话，但那一眼已经足够说明，他记住了你做过的事。"
+                );
+              }, "injured");
+            }, false);
+          });
+        } else {
+          gameState.satisfaction = clamp(gameState.satisfaction - 10, 0, 100);
+          gameState.trust = clamp(gameState.trust - 8, 0, 100);
+          gameState.chaos = clamp(gameState.chaos + 8, 0, 100);
+          document.querySelector("#injuredHarryNextBtn").addEventListener("click", renderOpeningCustomer);
+        }
+      }
+
+      bindAfterSaleWidget();
+    }
+
+    function handleDittanyChoice(give) {
+      if (give) {
+        const total = getAllProductsTotal();
+        gameState.jamesDittanyGivenToHarry = true;
+        addCoins(total);
+        gameState.satisfaction = clamp(gameState.satisfaction + 8, 0, 100);
+        gameState.trust = clamp(gameState.trust + 6, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 6, 0, 100);
+        unlockAchievement("迟来的守护", "一瓶没有署名的白鲜香精，替一个无法停留的人完成了守护。");
+        const finish = () => renderInjuredHarryResult(
+          "迟来的守护",
+          `你把白鲜香精递给哈利。<br><br>药剂滴在伤口上的瞬间，血痕慢慢收拢，皮肤恢复得很快。<br><br>哈利愣了一下。“谢谢。”<br><br>你没有回答。他看着那瓶药剂，又看了看柜台下方，忽然明白了什么。<br><br>随后，哈利把店里的所有商品都各买了一个。旅行经费 +${total}。`
+        );
+
+        if (gameState.lupinAlbumAccepted) {
+          renderLupinDittanyAssist(() => maybeTriggerAlbumGiftForHarry(finish, "injured"), true);
+        } else {
+          finish();
+        }
+        return;
+      }
+
+      gameState.jamesDittanyGivenToHarry = false;
+
+      if (gameState.lupinAlbumAccepted) {
+        renderLupinDittanyAssist(() => {
+          maybeTriggerAlbumGiftForHarry(() => {
+            renderInjuredHarryResult(
+              "卢平的改良药剂",
+              "你看着那瓶药剂，最终没有把它拿出来。<br><br>哈利扶着柜台，低声说：“没关系。我再去别的地方看看。”<br><br>就在他准备转身时，卢平走进来，帮哈利处理了伤口。"
+            );
+          }, "injured");
+        }, false);
+        return;
+      }
+
+      gameState.satisfaction = clamp(gameState.satisfaction - 12, 0, 100);
+      gameState.trust = clamp(gameState.trust - 10, 0, 100);
+      gameState.chaos = clamp(gameState.chaos + 10, 0, 100);
+      renderInjuredHarryResult(
+        "没有拿出的药",
+        "你看着那瓶药剂，最终没有把它拿出来。<br><br>哈利等了一会儿，像是明白了答案。<br><br>他说：“没关系。我再去别的地方看看。”<br><br>他一瘸一拐地离开了商店。门关上后，自动羽毛笔忽然在柜台上划下一道很重的墨痕。"
+      );
+    }
+
+    function renderInjuredHarryResult(title, text) {
+      setCurrentSlot("早上");
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel">
+            <p class="eyebrow">${getDayLabel()} · 早上</p>
+            <h1 class="after-sale-title">${title}</h1>
+            <p class="after-sale-copy">${text}</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="injuredHarryResultNextBtn">继续营业</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#injuredHarryResultNextBtn").addEventListener("click", renderOpeningCustomer);
+      bindAfterSaleWidget();
+    }
+
+    function triggerSnakeSaturdayEvent() {
+      if (gameState.currentDayIndex !== 5 || gameState.snakeSaturdayHandled) return false;
+
+      if (gameState.snakeRoute === "tracking") {
+        renderSnakeEarlyDepartureEvent();
+        return true;
+      }
+
+      if (gameState.snakeRoute === "honest") {
+        renderSnakeSaturdayChoice();
+        return true;
+      }
+
+      return false;
+    }
+
+    function renderSnakeEarlyDepartureEvent() {
+      setCurrentSlot("早上");
+      gameState.snakeSaturdayHandled = true;
+      recordHiddenEvent("黑蛇");
+      gameState.skipHarryDay6 = true;
+      addCoins(1700, false);
+      gameState.satisfaction = clamp(gameState.satisfaction - 10, 0, 100);
+      gameState.trust = clamp(gameState.trust - 20, 0, 100);
+      gameState.chaos = clamp(gameState.chaos + 30, 0, 100);
+      gameState.snakeEnding = "earlyDeparture";
+
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel bad">
+            <p class="eyebrow">${getDayLabel()} · 早上</p>
+            <h1 class="after-sale-title">沉甸甸的钱袋</h1>
+            <p class="after-sale-copy">${getDayLabel()}早上，第一个来的是那条黑蛇。</p>
+            <p class="after-sale-copy">它安静地爬上柜台，把一只沉甸甸的钱袋推到你面前。钱袋打开，里面是整整 1700 银西可。</p>
+            <p class="after-sale-copy">黑蛇抬起头，冰冷的眼睛盯着你。它没有发出声音，可你似乎明白了它的意思。</p>
+            <p class="result-line">你已经提前攒够了去埃及旅行的钱。</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="specialEndingBtn">提前出发</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#specialEndingBtn").addEventListener("click", showWeeklyReview);
+      bindAfterSaleWidget();
+    }
+
+    function renderSnakeSaturdayChoice() {
+      setCurrentSlot("早上");
+      gameState.snakeSaturdayHandled = true;
+      recordHiddenEvent("黑蛇");
+      renderStoryCustomerPage({
+        customer: {
+          day: `${getDayLabel()} · 早上`,
+          name: "一条黑蛇",
+          portrait: "snake",
+          description: "那瓶诚实墨水忽然自己晃了一下，柜台边缘多了几片黑色鳞片。",
+          need: "这一次，它盯着你，像是在等你做选择。"
+        },
+        title: "探路影子",
+        body: `${getDayLabel()}早上，柜台上那瓶诚实墨水忽然自己晃了一下。瓶塞没有打开，墨迹却从瓶口渗了出来，在柜台上缓慢铺开。<br><br>售后记录本自动翻到新的一页。纸上浮出一句英文：<strong>He has been here.</strong><br><br>你低头看见柜台边缘有几片黑色鳞片。门口传来细微的摩擦声，那条黑蛇再次爬进了商店。<br><br>你终于确认了那条黑蛇的来意。它在找哈利。`,
+        panelClass: "bad",
+        actions: [
+          { id: "snakeWarnBtn", label: "通知哈利", className: "next-btn", onClick: () => handleSnakeSaturdayChoice("warn") },
+          { id: "snakeSilentBtn", label: "什么都不做", className: "secondary-btn", onClick: () => handleSnakeSaturdayChoice("silent") },
+          { id: "snakeEncourageBtn", label: "对黑蛇说加油", className: "secondary-btn", onClick: () => handleSnakeSaturdayChoice("encourage") }
+        ]
+      });
+    }
+
+    function handleSnakeSaturdayChoice(choice) {
+      gameState.snakeRoute = choice;
+
+      if (choice === "warn") {
+        gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+        gameState.trust = clamp(gameState.trust + 8, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 5, 0, 100);
+        unlockAchievement("提前通知", "在黑蛇离开上点后，你把黑蛇的异常告诉了哈利，让他避开了原本的路线。那条黑蛇没有找到它想找的人。");
+        renderSnakeChoiceResult(
+          "通知哈利",
+          "黑蛇安静地看了你一会儿，随后滑下柜台，消失在门缝后的阴影里。<br><br>直到它彻底离开，柜台上的诚实墨水才终于停止晃动。<br><br>你没有再犹豫。<br><br>你把一张纸条塞进哈利之前留下的旧包装里，只写了一句话：<br><br>“别走原来的路。有人在找你。”<br><br>纸条被魔法火焰卷走后，门口的冷意还没有散。那一瞬间，你觉得某个东西已经在很远的地方记住了你的脸。",
+          "下一位顾客",
+          renderHarryBulkBuyEvent
+        );
+        return;
+      }
+
+      if (choice === "silent") {
+        gameState.satisfaction = clamp(gameState.satisfaction - 4, 0, 100);
+        gameState.trust = clamp(gameState.trust - 6, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 12, 0, 100);
+        gameState.skipHarryDay6 = true;
+        unlockAchievement("沉默的代价", "你没有通知哈利。有些危险没有立刻发生在柜台前，却会在你看不见的地方补上结果。");
+        renderSnakeChoiceResult(
+          "什么都不做",
+          "你合上售后记录本，把那几片黑色鳞片扫进抽屉。<br><br>也许这只是一次异常售后。也许哈利不会真的遇到危险。也许你只是一个临时店员，本来就不该插手这些事。<br><br>黑蛇安静地看了你一会儿，然后滑下柜台，消失在门缝后。",
+              "下一位顾客",
+          nextDay
+        );
+        return;
+      }
+
+      gameState.satisfaction = clamp(gameState.satisfaction - 20, 0, 100);
+      gameState.trust = clamp(gameState.trust - 40, 0, 100);
+      gameState.chaos = clamp(gameState.chaos + 50, 0, 100);
+      gameState.skipHarryDay6 = true;
+      gameState.snakeEnding = "prisoner";
+      renderSnakeChoiceResult(
+        "对黑蛇说加油",
+        "你看着售后记录本上的字，又看了看那几片黑色鳞片。<br><br>最后，你没有通知哈利，也没有合上记录本。你只是低声说：“加油。”<br><br>话音落下，商店里的烛火忽然全部矮了一截。像是有什么东西听见了。<br><br>黑蛇慢慢爬上柜台。它没有立刻离开，而是沿着你的手腕缠了一圈。它的身体很冷。冷得像一截从阴影里捞出来的锁链。<br><br>下一秒，你的手臂上传来灼痛。一枚黑色标记浮现在皮肤上。柜台警告铃猛地响起，声音尖锐得几乎刺穿耳膜。<br><br>商店里的所有灯同时亮起。门自动打开。一股看不见的力量把你推了出去。<br><br>你跌在门外时，黑蛇已经不见了。店门在你面前重重关上。玻璃上只浮出一行字：<br><br><strong>本店不雇佣食死徒。</strong>",
+        "查看结局",
+        showWeeklyReview
+      );
+    }
+
+    function renderSnakeChoiceResult(title, text, buttonText, nextHandler) {
+      setCurrentSlot("早上");
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel">
+            <p class="eyebrow">${getDayLabel()} · 早上</p>
+            <h1 class="after-sale-title">${title}</h1>
+            <p class="after-sale-copy">${text}</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="snakeChoiceNextBtn">${buttonText}</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#snakeChoiceNextBtn").addEventListener("click", nextHandler);
+      bindAfterSaleWidget();
+    }
+
+    function renderHarryBulkBuyEvent() {
+      maybeTriggerAlbumGiftForHarry(renderHarryBulkBuyEventContent, "normal");
+    }
+
+    function renderHarryBulkBuyEventContent() {
+      setCurrentSlot("中午");
+      const total = getAllProductsTotal();
+      addCoins(total);
+      gameState.satisfaction = clamp(gameState.satisfaction + 10, 0, 100);
+      gameState.trust = clamp(gameState.trust + 10, 0, 100);
+      gameState.chaos = clamp(gameState.chaos - 8, 0, 100);
+      gameState.skipHarryDay6 = true;
+      renderStoryCustomerPage({
+        customer: {
+          day: `${getDayLabel()} · 中午`,
+          name: "哈利·波特",
+          portrait: "harry",
+          description: "哈利看起来比平时更疲惫，但至少没有受伤。他把一张被折过很多次的纸条放在柜台上。",
+          need: "“谢谢你。如果不是这张纸条，我可能真的会走原来的路。”"
+        },
+        title: "哈利来了",
+        body: `不久之后，哈利来到商店。<br><br>他说完，看向货架。<br><br>“我想我欠你一个大人情。”<br><br><span class="result-line">随后，哈利把店里的所有商品都各买了一个。旅行经费 +${total}。</span>`,
+        panelClass: "good",
+        actions: [
+          { id: "harryBulkNextBtn", label: "下一位顾客", className: "next-btn", onClick: nextDay }
+        ]
+      });
+    }
+
+    function triggerTheodoreFirstVisit() {
+      return !gameState.theodoreSecondVisitTriggered
+        && !gameState.theodoreDay3Correct
+        && gameState.currentDayIndex === 2
+        && gameState.activeCustomerId !== "theodoreDay3";
+    }
+
+    function renderTheodoreFirstVisit() {
+      recordHiddenEvent("西奥多");
+      gameState.hiddenEventActive = true;
+      gameState.pendingNextDayAfterHidden = true;
+      gameState.activeCustomerId = "theodoreDay3";
+      gameState.hasSelectedToday = false;
+      gameState.selectedProductId = null;
+      gameState.selectedProductIds = [];
+      gameState.shelfPage = 0;
+      gameState.latestFeedback = "";
+      gameState.latestSelectionCorrect = false;
+      renderCustomer();
+    }
+
+    function triggerTheodoreSecondVisit() {
+      return gameState.theodoreDay3Correct
+        && !gameState.theodoreSecondVisitTriggered
+        && gameState.currentDayIndex === 3;
+    }
+
+    function renderTheodoreSecondVisit() {
+      recordHiddenEvent("西奥多");
+      gameState.hiddenEventActive = true;
+      gameState.pendingNextDayAfterHidden = false;
+      gameState.activeCustomerId = "theodoreSecond";
+      gameState.hasSelectedToday = false;
+      gameState.selectedProductId = null;
+      gameState.selectedProductIds = [];
+      gameState.shelfPage = 0;
+      gameState.latestFeedback = "";
+      renderCustomer();
+    }
+
+    function triggerTheodoreConfession() {
+      if (!gameState.theodoreLovePotionAccident || gameState.theodoreConfessionHandled || gameState.currentDayIndex !== 4) {
+        return false;
+      }
+
+      renderTheodoreConfession();
+      return true;
+    }
+
+    function renderTheodoreConfession() {
+      setCurrentSlot("晚上");
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel">
+            <p class="eyebrow">${getDayLabel()} · 晚上</p>
+            <h1 class="after-sale-title">西奥多的清晨来访</h1>
+            <p class="after-sale-copy">你刚把货架上的药剂瓶重新摆好，门外就传来很轻的敲门声。</p>
+            <p class="after-sale-copy">西奥多站在那里，脸色比平时更苍白，衣领却整理得一丝不乱。他的神情不像平常那样冷静，甚至带着一种近乎固执的认真。</p>
+            <p class="after-sale-copy">“我想了一整晚。”</p>
+            <p class="after-sale-copy">“我本来不该说这些，诺特家的人不该在商店门口做这种事。”</p>
+            <p class="after-sale-copy">“但我现在非常确定，我想见你。”</p>
+            <p class="result-line">你忽然想起昨晚那瓶药剂。它也许不是清醒药水。</p>
+            <div class="confirm-row">
+              <button class="next-btn" type="button" data-choice="accept">接受表白</button>
+              <button class="secondary-btn" type="button" data-choice="refuse">拒绝表白，并给他解药</button>
+              <button class="secondary-btn" type="button" data-choice="calm">让他冷静一点，等药效过去后再确定喜不喜欢我</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelectorAll("[data-choice]").forEach((button) => {
+        button.addEventListener("click", () => handleTheodoreConfessionChoice(button.dataset.choice));
+      });
+      bindAfterSaleWidget();
+    }
+
+    function handleTheodoreConfessionChoice(choice) {
+      const feedback = {
+        accept: "你没有立刻拆穿那瓶药剂，也没有把他的话当成玩笑。<br><br>你只是看着他，说你听见了。<br><br>西奥多的指尖在袖口处收紧了一下。那不是一个热烈的动作，却像某种长久克制之后露出的裂缝。<br><br>“那么，”他低声说，“等我足够清醒时，我会再问一遍。”<br><br>他没有靠近，也没有再说更多。只是离开时，把店门关得很轻。",
+        refuse: "你没有回避他的目光。<br><br>你告诉他，他昨晚喝下的可能不是清醒药水，而是迷情剂。<br><br>西奥多的表情一点点安静下来。那种过分固执的热度从他眼底退去，留下的不是狼狈，而是一种难堪的清醒。<br><br>你从柜台下取出一瓶解药，推到他面前。<br><br>“这瓶算我的。”<br><br>西奥多沉默着喝下解药。过了很久，他才把空瓶放回柜台。<br><br>“我明白了。”他说。<br><br>他没有落荒而逃，只是重新整理好袖口，向你微微欠身。<br><br>“为今天早上的失礼，我道歉。”",
+        calm: "你没有答应，也没有拒绝。<br><br>你把柜台上的药剂瓶转过去，让标签朝向他。<br><br>“西奥多，你可能中了迷情剂。”<br><br>他的神情有一瞬间的空白。随后，那种属于诺特家的骄傲像本能一样回到他脸上，可这一次，它没能完全遮住他的动摇。<br><br>你给他倒了一杯水，让他坐下。<br><br>“等药效过去。”你说，“如果那时候你还想说同样的话，再正式问我。”<br><br>西奥多盯着杯沿看了很久。<br><br>“你总是把事情说得很难反驳。”<br><br>西奥多端起你给的水杯喝了一口，放下，离开。"
+      };
+
+      if (choice === "accept") {
+        gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+        gameState.trust = clamp(gameState.trust - 6, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 12, 0, 100);
+        gameState.theodoreRoseLetterUnlocked = true;
+      }
+
+      if (choice === "refuse") {
+        gameState.coins = Math.max(0, gameState.coins - 100);
+        gameState.satisfaction = clamp(gameState.satisfaction - 2, 0, 100);
+        gameState.trust = clamp(gameState.trust + 12, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 10, 0, 100);
+        gameState.theodoreRoseLetterUnlocked = false;
+      }
+
+      if (choice === "calm") {
+        gameState.satisfaction = clamp(gameState.satisfaction + 8, 0, 100);
+        gameState.trust = clamp(gameState.trust + 8, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 5, 0, 100);
+        gameState.theodoreRoseLetterUnlocked = true;
+      }
+
+      gameState.theodoreConfessionHandled = true;
+      gameState.theodoreConfessionChoice = choice;
+      unlockTheodoreAchievement(choice);
+
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel">
+            <p class="eyebrow">${getDayLabel()} · 晚上</p>
+            <h1 class="after-sale-title">选择已记录</h1>
+            <p class="after-sale-copy">${feedback[choice]}</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="continueBusinessBtn">继续营业</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#continueBusinessBtn").addEventListener("click", continueAfterTheodoreConfession);
+      bindAfterSaleWidget();
+    }
+
+    function continueAfterTheodoreConfession() {
+      if (shouldTriggerDracoWarning()) {
+        renderDracoWarningEvent();
+        return;
+      }
+
+      nextDay();
+    }
+
+    function checkAfterSale() {
+      if (gameState.currentDayIndex === 0) return null;
+
+      const candidates = afterSalePool.filter((order) => {
+        return !order.hasReturned && order.customerId !== "lupinDay3" && order.dayIndex < gameState.currentDayIndex;
+      });
+
+      if (candidates.length === 0) return null;
+
+      const order = candidates[Math.floor(Math.random() * candidates.length)];
+      const currentDay = getDayLabel(gameState.currentDayIndex);
+      order.hasReturned = true;
+
+      let resultText = "";
+
+      if (order.isCorrect) {
+        addCoins(5);
+        gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+        gameState.trust = clamp(gameState.trust + 4, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+        resultText = "结果：旅行经费 +5，满意度 +6，商店声誉 +4，混乱值 -2。";
+
+        if (order.customerId === "harryDay1") {
+          gameState.unlockedJames = true;
+        }
+      } else {
+        gameState.satisfaction = clamp(gameState.satisfaction - 6, 0, 100);
+        gameState.trust = clamp(gameState.trust - 5, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 8, 0, 100);
+        resultText = "结果：满意度 -6，商店声誉 -5，混乱值 +8。";
+      }
+
+      const record = {
+        returnDay: currentDay,
+        customerName: order.customerName,
+        productName: order.productName,
+        feedback: order.afterSaleFeedback,
+        resultText,
+        isCorrect: order.isCorrect
+      };
+
+      afterSaleRecords.push(record);
+      return record;
+    }
+
+    function renderAfterSaleEvent(record) {
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel ${record.isCorrect ? "good" : "bad"}">
+            <p class="eyebrow">${record.returnDay} · 开店前</p>
+            <h1 class="after-sale-title">售后回访</h1>
+            <p class="after-sale-copy">${record.customerName}回来反馈了“${record.productName}”。</p>
+            <p class="after-sale-copy">${record.feedback}</p>
+            <p class="result-line">${record.resultText}</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="continueBusinessBtn">继续营业</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#continueBusinessBtn").addEventListener("click", renderOpeningCustomer);
+      bindAfterSaleWidget();
+    }
+
+    function renderAfterSaleWidget() {
+      return `
+        <nav class="tool-dock" aria-label="快捷工具">
+          <button class="tool-button after-sale-book-button" type="button" id="afterSaleBookBtn" aria-label="打开售后记录">
+            <span class="tool-icon-wrap book-icon-wrap" aria-hidden="true">
+              <img class="book-icon-closed" src="closed-book.png" alt="" />
+              <img class="book-icon-open" src="open-book.png" alt="" />
+            </span>
+            <span class="tool-label book-label">After Sale</span>
+          </button>
+          <button class="tool-button bag-button" type="button" id="bagBtn" aria-label="打开背包">
+            <span class="tool-icon-wrap" aria-hidden="true">
+              <img class="bag-icon-closed" src="bag-closed.png" alt="" />
+              <img class="bag-icon-open" src="bag-open.png" alt="" />
+            </span>
+            <span class="tool-label">Bag</span>
+          </button>
+          <button class="tool-button shelf-button" type="button" id="shelfBtn" aria-label="查看货架">
+            <span class="tool-icon-wrap" aria-hidden="true">
+              <img src="shelf-icon.png" alt="" />
+            </span>
+            <span class="tool-label">Shelf</span>
+          </button>
+        </nav>
+        <section class="after-sale-modal hidden" id="afterSaleModal" aria-modal="true" role="dialog" aria-labelledby="afterSaleModalTitle">
+          <div class="after-sale-dialog">
+            <div class="modal-title-row">
+              <img class="modal-book-art" src="open-book.png" alt="" />
+              <h2 class="modal-title" id="afterSaleModalTitle">After Sale</h2>
+              <button class="secondary-btn modal-close" type="button" id="closeAfterSaleModalTop">关闭记录本</button>
+            </div>
+            ${renderAfterSaleRecords()}
+            <div class="next-row">
+              <button class="next-btn modal-close" type="button" id="closeAfterSaleModalBottom">关闭记录本</button>
+            </div>
+          </div>
+        </section>
+        <section class="inventory-modal hidden" id="bagModal" aria-modal="true" role="dialog" aria-labelledby="bagModalTitle">
+          <div class="inventory-dialog">
+            <h2 class="inventory-title" id="bagModalTitle">Bag</h2>
+            <p class="inventory-copy">你还没获得任何物品。</p>
+            <div class="next-row">
+              <button class="next-btn bag-close" type="button">关闭背包</button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function bindAfterSaleWidget() {
+      const openButton = document.querySelector("#afterSaleBookBtn");
+      const modal = document.querySelector("#afterSaleModal");
+      const closeButtons = document.querySelectorAll(".modal-close");
+      const bagButton = document.querySelector("#bagBtn");
+      const bagModal = document.querySelector("#bagModal");
+      const shelfButton = document.querySelector("#shelfBtn");
+
+      if (!openButton || !modal) return;
+
+      if (shelfButton) {
+        shelfButton.classList.toggle("active", gameState.shelfOpen);
+      }
+
+      openButton.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          modal.classList.add("hidden");
+        });
+      });
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          modal.classList.add("hidden");
+        }
+      });
+
+      if (bagButton && bagModal) {
+        bagButton.addEventListener("click", () => {
+          bagModal.classList.remove("hidden");
+        });
+
+        document.querySelectorAll(".bag-close").forEach((button) => {
+          button.addEventListener("click", () => bagModal.classList.add("hidden"));
+        });
+
+        bagModal.addEventListener("click", (event) => {
+          if (event.target === bagModal) {
+            bagModal.classList.add("hidden");
+          }
+        });
+      }
+
+      if (shelfButton) {
+        shelfButton.addEventListener("click", () => {
+          const productPanel = document.querySelector(".product-panel");
+          if (productPanel) {
+            gameState.shelfOpen = !gameState.shelfOpen;
+            document.querySelector(".business")?.classList.toggle("shelf-open", gameState.shelfOpen);
+            shelfButton.classList.toggle("active", gameState.shelfOpen);
+          }
+        });
+      }
+    }
+
+    function unlockAchievement(name, description) {
+      const exists = gameState.achievements.some((achievement) => achievement.name === name);
+
+      if (exists) return "";
+
+      gameState.achievements.push({ name, description });
+      return `成就解锁：${name}`;
+    }
+
+    function renderAfterSaleRecords() {
+      const records = afterSaleRecords.slice().reverse();
+
+      return `
+        <section>
+          <div class="modal-record-list">
+            ${records.length === 0 ? `
+              <article class="record-item">
+                <p class="record-copy">记录本还是空的。也许明天就会有顾客回来找你。</p>
+              </article>
+            ` : records.map((record) => `
+              <article class="record-item">
+                <p class="record-title">【${record.returnDay}售后】</p>
+                <p class="record-copy">${record.customerName}回来反馈了“${record.productName}”。</p>
+                <p class="record-copy">${record.feedback}</p>
+                <p class="record-copy">${record.resultText}</p>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function getCustomerDialogueHtml(customer) {
+      return `
+        <p class="dialogue-copy">${customer.description}</p>
+        <p class="dialogue-need">${customer.need}</p>
+      `;
+    }
+
+    function normalizeDialogueHtml(html) {
+      return html
+        .replace(/(\s*<br\s*\/?>\s*)+/gi, "<br>")
+        .replace(/<\/p>\s*<p/gi, "</p><p");
+    }
+
+    function stripDialogueResultLines(html) {
+      return html
+        .replace(/<span\b[^>]*class=["'][^"']*\bresult-line\b[^"']*["'][^>]*>[\s\S]*?<\/span>/gi, "")
+        .replace(/<p\b[^>]*class=["'][^"']*\bresult-line\b[^"']*["'][^>]*>[\s\S]*?<\/p>/gi, "");
+    }
+
+    function splitDialoguePages(html, maxLength = DEFAULT_DIALOGUE_MAX_LENGTH) {
+      const splitAutoPages = (chunk) => {
+        const segments = chunk
+        .replace(/<br\s*\/?>\s*<br\s*\/?>/gi, "<br><br>|")
+        .replace(/([。！？])/g, "$1|")
+        .split("|")
+        .map((item) => item.trim())
+        .filter(Boolean);
+        const pages = [];
+        let current = "";
+
+        segments.forEach((segment) => {
+          const plainLength = (current + segment).replace(/<[^>]+>/g, "").length;
+          if (current && plainLength > maxLength) {
+            pages.push(current);
+            current = segment;
+          } else {
+            current += segment;
+          }
+        });
+
+        if (current) pages.push(current);
+        return pages;
+      };
+
+      const manualChunks = normalizeDialogueHtml(html)
+        .split(DIALOGUE_PAGE_BREAK)
+        .map((item) => item.trim())
+        .filter(Boolean);
+      const pages = manualChunks.flatMap((chunk) => splitAutoPages(chunk));
+      return pages.length ? pages : [html];
+    }
+
+    function setDialoguePages(html, options = {}) {
+      const content = document.querySelector("#dialogueContent");
+      const continueButton = document.querySelector("#continueDialogueBtn");
+      const nextButton = document.querySelector("#nextDayBtn");
+      if (!content || !continueButton) return;
+
+      const dialogueHtml = normalizeDialogueHtml(stripDialogueResultLines(html));
+      const pages = splitDialoguePages(dialogueHtml, options.maxLength || DEFAULT_DIALOGUE_MAX_LENGTH);
+      let pageIndex = 0;
+
+      function renderPage() {
+        content.innerHTML = pages[pageIndex];
+        const hasMore = pageIndex < pages.length - 1;
+        continueButton.classList.toggle("hidden", !hasMore);
+
+        if (nextButton && options.showNextWhenDone) {
+          nextButton.classList.toggle("hidden", hasMore);
+        }
+      }
+
+      continueButton.onclick = () => {
+        pageIndex = Math.min(pageIndex + 1, pages.length - 1);
+        renderPage();
+      };
+
+      renderPage();
+    }
+
+    function renderCustomer() {
+      const customer = getActiveCustomer();
+      if (!gameState.hasSelectedToday) {
+        gameState.selectedProductId = null;
+        gameState.selectedProductIds = [];
+        gameState.latestSelectionCorrect = false;
+        gameState.shelfOpen = false;
+        gameState.shelfPage = 0;
+      }
+      setSlotForCustomer(customer.id);
+
+      app.innerHTML = `
+        <section class="screen business ${getSceneClass()} ${gameState.shelfOpen ? "shelf-open" : ""}">
+          ${renderStats()}
+          <div class="business-grid">
+            <section class="customer-panel">
+              <div class="portrait ${customer.portrait}" aria-hidden="true"></div>
+              <h2 class="customer-name">${customer.name}</h2>
+            </section>
+            <section class="product-panel">
+              <div class="shelf-header">
+                <h2 class="panel-title">货架商品</h2>
+                <div class="shelf-pager" aria-label="货架分页">
+                  <button class="shelf-page-btn" type="button" id="prevShelfPageBtn" aria-label="上一页">‹</button>
+                  <span id="shelfPageText">1/1</span>
+                  <button class="shelf-page-btn" type="button" id="nextShelfPageBtn" aria-label="下一页">›</button>
+                </div>
+              </div>
+              <div class="product-grid" id="productGrid"></div>
+              <div class="product-detail" id="productDetail">
+                <h3 class="detail-name">查看商品说明</h3>
+                <p class="detail-copy">先点选一件商品，确认它的价格和用途，再决定是否推荐给顾客。</p>
+              </div>
+            </section>
+          </div>
+          <section class="dialogue-box">
+            <div>
+              <div id="dialogueContent"></div>
+            </div>
+            <div class="next-row">
+              <button class="secondary-btn dialogue-continue hidden" type="button" id="continueDialogueBtn">继续</button>
+              <button class="next-btn hidden" type="button" id="nextDayBtn">下一位顾客</button>
+            </div>
+            <section class="feedback-panel" id="feedbackPanel">
+              <p class="feedback-text hidden" id="feedbackText"></p>
+            </section>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      renderProducts();
+      renderProductDetail();
+      bindAfterSaleWidget();
+      setDialoguePages(getCustomerDialogueHtml(customer));
+
+    }
+
+    function renderStoryCustomerPage({ customer, title, body, actions = [], panelClass = "" }) {
+      app.innerHTML = `
+        <section class="screen business ${getSceneClass()}">
+          ${renderStats()}
+          <div class="business-grid">
+            <section class="customer-panel">
+              <div class="portrait ${customer.portrait}" aria-hidden="true"></div>
+              <h2 class="customer-name">${customer.name}</h2>
+            </section>
+            <section class="product-panel ${panelClass}">
+              <h2 class="panel-title">${title}</h2>
+              <div class="product-detail">
+                <p class="detail-copy">${body}</p>
+              </div>
+            </section>
+          </div>
+          <section class="dialogue-box">
+            <div>
+              <p class="dialogue-copy">${normalizeDialogueHtml(customer.description)}</p>
+              <p class="dialogue-need">${normalizeDialogueHtml(customer.need)}</p>
+            </div>
+            ${actions.length ? `
+              <div class="next-row">
+                ${actions.map((action) => `
+                  <button class="${action.className || "secondary-btn"}" type="button" id="${action.id}">${action.label}</button>
+                `).join("")}
+              </div>
+            ` : ""}
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      actions.forEach((action) => {
+        document.querySelector(`#${action.id}`).addEventListener("click", action.onClick);
+      });
+      bindAfterSaleWidget();
+    }
+
+    function renderProducts() {
+      const productGrid = document.querySelector("#productGrid");
+      const visibleProducts = products.filter(isProductAvailable);
+      const totalPages = Math.max(1, Math.ceil(visibleProducts.length / PRODUCTS_PER_SHELF_PAGE));
+      gameState.shelfPage = clamp(gameState.shelfPage, 0, totalPages - 1);
+      const pageStart = gameState.shelfPage * PRODUCTS_PER_SHELF_PAGE;
+      const pageProducts = visibleProducts.slice(pageStart, pageStart + PRODUCTS_PER_SHELF_PAGE);
+      productGrid.innerHTML = pageProducts.map((product) => {
+        const isSelected = gameState.selectedProductId === product.id;
+        const isBundleSelected = gameState.selectedProductIds.includes(product.id);
+        const correctProduct = matchRules[getActiveCustomer().id].productId;
+        let selectedClass = "";
+
+        if (isSelected && gameState.hasSelectedToday) {
+          selectedClass = product.id === correctProduct ? "selected-good" : "selected-bad";
+        } else if (isBundleSelected) {
+          selectedClass = "selected-view";
+        } else if (isSelected) {
+          selectedClass = "selected-view";
+        }
+
+        return `
+          <button class="product-card ${selectedClass}" type="button" data-product-id="${product.id}" ${gameState.hasSelectedToday ? "disabled" : ""}>
+            <span class="product-name">${product.name}</span>
+            <span class="product-price">${product.price} 银西可</span>
+          </button>
+        `;
+      }).join("");
+
+      document.querySelectorAll(".product-card").forEach((button) => {
+        button.addEventListener("click", () => inspectProduct(button.dataset.productId));
+      });
+
+      const pageText = document.querySelector("#shelfPageText");
+      const prevButton = document.querySelector("#prevShelfPageBtn");
+      const nextButton = document.querySelector("#nextShelfPageBtn");
+
+      if (pageText) {
+        pageText.textContent = `${gameState.shelfPage + 1}/${totalPages}`;
+      }
+
+      if (prevButton) {
+        prevButton.disabled = gameState.shelfPage <= 0;
+        prevButton.addEventListener("click", () => changeShelfPage(-1));
+      }
+
+      if (nextButton) {
+        nextButton.disabled = gameState.shelfPage >= totalPages - 1;
+        nextButton.addEventListener("click", () => changeShelfPage(1));
+      }
+    }
+
+    function changeShelfPage(delta) {
+      const visibleProducts = products.filter(isProductAvailable);
+      const totalPages = Math.max(1, Math.ceil(visibleProducts.length / PRODUCTS_PER_SHELF_PAGE));
+      const nextPage = clamp(gameState.shelfPage + delta, 0, totalPages - 1);
+
+      if (nextPage === gameState.shelfPage) return;
+
+      gameState.shelfPage = nextPage;
+      gameState.selectedProductId = null;
+      renderProducts();
+      renderProductDetail();
+    }
+
+    function inspectProduct(productId) {
+      if (gameState.hasSelectedToday) return;
+
+      gameState.selectedProductId = productId;
+      renderProducts();
+      renderProductDetail();
+    }
+
+    function renderProductDetail() {
+      const detail = document.querySelector("#productDetail");
+      if (!detail) return;
+
+      const product = getProduct(gameState.selectedProductId);
+      const customer = getActiveCustomer();
+
+      if (!product) {
+        detail.innerHTML = `
+          <h3 class="detail-name">查看商品说明</h3>
+          <p class="detail-copy">${isBundleCustomer(customer.id) ? "这位顾客可能需要不止一件商品。先点选商品加入推荐清单，再统一确认。" : "先点选一件商品，确认它的价格和用途，再决定是否推荐给顾客。"}</p>
+        `;
+        return;
+      }
+
+      const bundleMode = isBundleCustomer(customer.id);
+      const bundleSelected = gameState.selectedProductIds.includes(product.id);
+      const bundleProducts = getSelectedBundleProducts();
+
+      detail.innerHTML = `
+        <h3 class="detail-name">${product.name}</h3>
+        <p class="detail-copy"><strong>价格：</strong>${product.price} 银西可</p>
+        <p class="detail-copy">${product.description}</p>
+        ${bundleMode && !gameState.hasSelectedToday ? `
+          <p class="detail-copy"><strong>当前推荐：</strong>${bundleProducts.length ? bundleProducts.map((item) => item.name).join(" + ") : "尚未加入商品"}</p>
+          <div class="confirm-row">
+            <button class="secondary-btn" type="button" id="toggleBundleProductBtn">${bundleSelected ? "移出推荐清单" : "加入推荐清单"}</button>
+            ${bundleProducts.length ? `<button class="next-btn" type="button" id="confirmBundleBtn">确认推荐这些商品</button>` : ""}
+          </div>
+        ` : gameState.hasSelectedToday ? "" : `
+          <div class="confirm-row">
+            <button class="next-btn" type="button" id="confirmProductBtn">确定把这个卖给顾客吗？</button>
+          </div>
+        `}
+      `;
+
+      const confirmButton = document.querySelector("#confirmProductBtn");
+      const toggleBundleButton = document.querySelector("#toggleBundleProductBtn");
+      const confirmBundleButton = document.querySelector("#confirmBundleBtn");
+
+      if (confirmButton) {
+        confirmButton.addEventListener("click", () => showSaleConfirm(product.id));
+      }
+
+      if (toggleBundleButton) {
+        toggleBundleButton.addEventListener("click", () => toggleBundleProduct(product.id));
+      }
+
+      if (confirmBundleButton) {
+        confirmBundleButton.addEventListener("click", showBundleSaleConfirm);
+      }
+    }
+
+    function toggleBundleProduct(productId) {
+      if (gameState.selectedProductIds.includes(productId)) {
+        gameState.selectedProductIds = gameState.selectedProductIds.filter((id) => id !== productId);
+      } else {
+        gameState.selectedProductIds.push(productId);
+      }
+
+      renderProducts();
+      renderProductDetail();
+    }
+
+    function showSaleConfirm(productId) {
+      const product = getProduct(productId);
+      const customer = getActiveCustomer();
+
+      if (customer.id === "arianaFirst") {
+        showNoPaySaleConfirm(productId, "阿利安娜·邓布利多");
+        return;
+      }
+
+      if (customer.id === "jamesHidden") {
+        showJamesSaleConfirm(productId);
+        return;
+      }
+
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "saleConfirmModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">确认售卖</h2>
+          <p class="confirm-sale-copy">确定把“${product.name}”推荐给${customer.name}吗？</p>
+          <div class="confirm-row">
+            <button class="secondary-btn" type="button" id="cancelSaleConfirm">取消</button>
+            <button class="next-btn" type="button" id="acceptSaleConfirm">确认售卖</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      document.querySelector("#cancelSaleConfirm").addEventListener("click", () => {
+        modal.remove();
+      });
+
+      document.querySelector("#acceptSaleConfirm").addEventListener("click", () => {
+        modal.remove();
+        selectProduct(productId);
+      });
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          modal.remove();
+        }
+      });
+    }
+
+    function showNoPaySaleConfirm(productId, customerName) {
+      const product = getProduct(productId);
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "saleConfirmModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">确认赠出商品</h2>
+          <p class="confirm-sale-copy">你确定要将“${product.name}”交给${customerName}吗？她没有钱可以付款。</p>
+          <div class="confirm-row">
+            <button class="secondary-btn" type="button" id="cancelNoPayConfirm">取消</button>
+            <button class="next-btn" type="button" id="acceptNoPayConfirm">确认交给她</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      document.querySelector("#cancelNoPayConfirm").addEventListener("click", () => modal.remove());
+      document.querySelector("#acceptNoPayConfirm").addEventListener("click", () => {
+        modal.remove();
+        selectProduct(productId);
+      });
+    }
+
+    function showBundleSaleConfirm() {
+      const customer = getActiveCustomer();
+      const selectedProducts = getSelectedBundleProducts();
+
+      if (!selectedProducts.length) return;
+
+      const total = selectedProducts.reduce((sum, product) => sum + product.price, 0);
+      const noPayCopy = customer.id === "arianaSecond" ? "她没有钱可以付款，这些商品成本会由你承担。" : `合计：${total} 银西可。`;
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "saleConfirmModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">确认推荐</h2>
+          <p class="confirm-sale-copy">确定把“${selectedProducts.map((product) => product.name).join(" + ")}”推荐给${customer.name}吗？</p>
+          <p class="confirm-sale-copy">${noPayCopy}</p>
+          <div class="confirm-row">
+            <button class="secondary-btn" type="button" id="cancelBundleConfirm">取消</button>
+            <button class="next-btn" type="button" id="acceptBundleConfirm">确认推荐</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      document.querySelector("#cancelBundleConfirm").addEventListener("click", () => modal.remove());
+      document.querySelector("#acceptBundleConfirm").addEventListener("click", () => {
+        modal.remove();
+        selectBundleProducts(gameState.selectedProductIds.slice());
+      });
+    }
+
+    function showJamesSaleConfirm(productId) {
+      const product = getProduct(productId);
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "saleConfirmModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">确认售卖给幽灵</h2>
+          <p class="confirm-sale-copy">你确定要把“${product.name}”卖给一个幽灵吗？他不会付款，商品成本将从你的旅行经费里扣除 ${product.price} 银西可。</p>
+          <div class="confirm-row">
+            <button class="secondary-btn" type="button" id="declineJamesSale">否</button>
+            <button class="next-btn" type="button" id="acceptJamesSale">是，售卖给他</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      document.querySelector("#declineJamesSale").addEventListener("click", () => {
+        modal.remove();
+        declineJamesSale();
+      });
+
+      document.querySelector("#acceptJamesSale").addEventListener("click", () => {
+        modal.remove();
+        selectProduct(productId);
+      });
+    }
+
+    function declineJamesSale() {
+      gameState.hasSelectedToday = true;
+      gameState.selectedProductId = null;
+      gameState.jamesGiftPrepared = false;
+      gameState.latestFeedback = "詹姆斯看着你收回手，镜片后的目光暗了一点。他没有责备，只是低声说：“我明白了。”烛火轻轻一晃，他失望地离开了商店。";
+      renderCustomer();
+      showFeedback(false);
+    }
+
+    function selectProduct(productId) {
+      if (gameState.hasSelectedToday) return;
+
+      const customer = getActiveCustomer();
+      const product = getProduct(productId);
+      const rule = matchRules[customer.id];
+      const isCorrect = productId === rule.productId;
+
+      gameState.hasSelectedToday = true;
+      gameState.selectedProductId = productId;
+
+      if (customer.id === "hagridDay1") {
+        handleHagridProduct(productId);
+        if (gameState.toadEnding) {
+          renderToadFiringScene();
+          return;
+        }
+        renderCustomer();
+        showFeedback(gameState.latestSelectionCorrect);
+        return;
+      }
+
+      if (!gameState.hiddenEventActive && customer.id === "snakeDay5") {
+        handleSnakeFirstVisitProduct(productId);
+        renderCustomer();
+        showFeedback(productId === "honestInk");
+        return;
+      }
+
+      if (!gameState.hiddenEventActive) {
+        addCoins(product.price);
+        if (product.id === "twoWayMirror") {
+          unlockAchievement("跨越死亡的凝视", "你卖出了双面镜。被正确的人拿在手中时，它可能让人看见最想见到的人。");
+        }
+      }
+
+      if (isRandomCustomer(customer.id)) {
+        handleRandomCustomerProduct(productId);
+      } else if (customer.id === "arianaFirst" || customer.id === "nightWizard") {
+        handleSpecialSingleCustomerProduct(productId);
+      } else if (gameState.hiddenEventActive && customer.id === "theodoreDay3") {
+        handleTheodoreFirstVisitProduct(productId);
+      } else if (gameState.hiddenEventActive && customer.id === "theodoreSecond") {
+        handleTheodoreSecondVisitProduct(productId);
+      } else if (gameState.hiddenEventActive && customer.id === "jamesHidden") {
+        recordRecommendation(isCorrect);
+        const ghostCost = Math.min(gameState.coins, product.price);
+        gameState.coins = Math.max(0, gameState.coins - product.price);
+        if (isCorrect) {
+          gameState.satisfaction = clamp(gameState.satisfaction + 10, 0, 100);
+          gameState.trust = clamp(gameState.trust + 10, 0, 100);
+          gameState.chaos = clamp(gameState.chaos - 5, 0, 100);
+          gameState.jamesGiftPrepared = true;
+          const achievementNotice = unlockAchievement("父亲的感谢", "你帮助哈利做出了正确选择，也让一个迟来的守护有了落点。");
+          gameState.latestFeedback = `${customer.successFeedback}<br><span class="result-line">幽灵没有付款，旅行经费 -${ghostCost}。</span>${achievementNotice ? `<br><strong>${achievementNotice}</strong>` : ""}`;
+        } else {
+          gameState.satisfaction = clamp(gameState.satisfaction + 2, 0, 100);
+          gameState.trust = clamp(gameState.trust + 2, 0, 100);
+          gameState.jamesGiftPrepared = false;
+          gameState.latestFeedback = `${customer.failFeedback}<br><strong>本次推荐：</strong>${product.name}。<br><span class="result-line">幽灵没有付款，旅行经费 -${ghostCost}。</span>`;
+        }
+      } else if (!gameState.hiddenEventActive && customer.id === "dracoDay4") {
+        handleDracoFirstVisitProduct(productId);
+      } else {
+        recordRecommendation(isCorrect);
+        if (isCorrect) {
+          gameState.satisfaction = clamp(gameState.satisfaction + 8, 0, 100);
+          gameState.trust = clamp(gameState.trust + 6, 0, 100);
+          gameState.chaos = clamp(gameState.chaos - 4, 0, 100);
+          gameState.latestFeedback = customer.successFeedback;
+
+          if (customer.id === "lupinDay3") {
+            gameState.lupinTrustUnlocked = true;
+            gameState.latestFeedback += "<br>卢平离开前轻轻按了按旧皮箱的搭扣，像是终于决定把某件放了很久的东西带来。";
+          }
+
+          if (customer.id === "harryDay1") {
+            gameState.unlockedJames = true;
+          }
+        } else {
+          gameState.satisfaction = clamp(gameState.satisfaction - 6, 0, 100);
+          gameState.trust = clamp(gameState.trust - 5, 0, 100);
+          gameState.chaos = clamp(gameState.chaos + 12, 0, 100);
+          gameState.latestFeedback = `${customer.failFeedback}<br><strong>本次售出：</strong>${product.name}。`;
+        }
+
+        if (customer.id !== "hermioneDay2") {
+          afterSalePool.push({
+            customerId: customer.id,
+            customerName: customer.name,
+            productName: product.name,
+            productId: product.id,
+            day: customer.day,
+            dayIndex: gameState.currentDayIndex,
+            isCorrect,
+            hasReturned: false,
+            immediateFeedback: isCorrect ? customer.successFeedback : customer.failFeedback,
+            afterSaleFeedback: afterSaleTexts[customer.id][isCorrect ? "good" : "bad"]
+          });
+        }
+      }
+
+      renderCustomer();
+      showFeedback(isCorrect);
+
+      if (!gameState.hiddenEventActive && customer.id === "harryDay6") {
+        maybeTriggerAlbumGiftForHarry(() => {}, "normal");
+      }
+    }
+
+    function selectBundleProducts(productIds) {
+      if (gameState.hasSelectedToday) return;
+
+      const customer = getActiveCustomer();
+      gameState.hasSelectedToday = true;
+      gameState.selectedProductIds = productIds.slice();
+
+      if (customer.id === "borginSpy") {
+        handleBorginSpyProducts(productIds);
+      } else if (customer.id === "aberforthDay2") {
+        handleAberforthProducts(productIds);
+      } else if (customer.id === "arianaSecond") {
+        handleArianaSecondProducts(productIds);
+      }
+
+      renderCustomer();
+      showFeedback(gameState.latestSelectionCorrect);
+    }
+
+    function getProductsTotal(productIds) {
+      return productIds.reduce((sum, id) => sum + (getProduct(id)?.price || 0), 0);
+    }
+
+    function handleRandomCustomerProduct(productId) {
+      const customer = getActiveCustomer();
+      const product = getProduct(productId);
+      const isCorrect = productId === matchRules[customer.id].productId;
+      const resultLines = {
+        randomBowtruckle: {
+          good: "结果：旅行经费 +119，顾客满意度 +7，商店声誉 +5，混乱值 -3。",
+          bad: "结果：旅行经费 +0，顾客满意度 -4，商店声誉 -2，混乱值 +3。"
+        },
+        randomCrookshanks: {
+          good: "结果：旅行经费 +57，顾客满意度 +6，商店声誉 +4，混乱值 -2。",
+          bad: "结果：旅行经费 +0，顾客满意度 -4，商店声誉 -1，混乱值 +2。"
+        },
+        randomRita: {
+          good: "结果：旅行经费 +136，顾客满意度 +7，商店声誉 -6，混乱值 +8。",
+          bad: "结果：旅行经费 +0，顾客满意度 -5，商店声誉 -3，混乱值 +10。"
+        }
+      };
+
+      recordRecommendation(isCorrect);
+      gameState.latestSelectionCorrect = isCorrect;
+
+      if (isCorrect) {
+        addCoins(product.price);
+
+        if (customer.id === "randomBowtruckle") {
+          gameState.satisfaction = clamp(gameState.satisfaction + 7, 0, 100);
+          gameState.trust = clamp(gameState.trust + 5, 0, 100);
+          gameState.chaos = clamp(gameState.chaos - 3, 0, 100);
+        } else if (customer.id === "randomCrookshanks") {
+          gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+          gameState.trust = clamp(gameState.trust + 4, 0, 100);
+          gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+        } else if (customer.id === "randomRita") {
+          gameState.satisfaction = clamp(gameState.satisfaction + 7, 0, 100);
+          gameState.trust = clamp(gameState.trust - 6, 0, 100);
+          gameState.chaos = clamp(gameState.chaos + 8, 0, 100);
+        }
+
+        gameState.latestFeedback = `${customer.successFeedback}<br><span class="result-line">${resultLines[customer.id].good}</span>`;
+      } else {
+        if (customer.id === "randomBowtruckle") {
+          gameState.satisfaction = clamp(gameState.satisfaction - 4, 0, 100);
+          gameState.trust = clamp(gameState.trust - 2, 0, 100);
+          gameState.chaos = clamp(gameState.chaos + 3, 0, 100);
+        } else if (customer.id === "randomCrookshanks") {
+          gameState.satisfaction = clamp(gameState.satisfaction - 4, 0, 100);
+          gameState.trust = clamp(gameState.trust - 1, 0, 100);
+          gameState.chaos = clamp(gameState.chaos + 2, 0, 100);
+        } else if (customer.id === "randomRita") {
+          gameState.satisfaction = clamp(gameState.satisfaction - 5, 0, 100);
+          gameState.trust = clamp(gameState.trust - 3, 0, 100);
+          gameState.chaos = clamp(gameState.chaos + 10, 0, 100);
+        }
+
+        gameState.latestFeedback = `${customer.failFeedback}<br><strong>本次推荐：</strong>${product.name}。<br><span class="result-line">${resultLines[customer.id].bad}</span>`;
+      }
+    }
+
+    function handleHagridProduct(productId) {
+      const product = getProduct(productId);
+      const isCorrect = productId === "runeGloves";
+      gameState.latestSelectionCorrect = isCorrect;
+
+      if (isCorrect) {
+        recordRecommendation(true);
+        addCoins(product.price);
+        gameState.hagridRetry = false;
+        gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+        gameState.trust = clamp(gameState.trust + 4, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+        gameState.latestFeedback = `${customers.find((customer) => customer.id === "hagridDay1").successFeedback}<br><span class="result-line">结果：旅行经费 +${product.price}，顾客满意度 +6，商店声誉 +4，混乱值 -2。</span>`;
+        return;
+      }
+
+      if (!gameState.hagridRetry) {
+        gameState.hasSelectedToday = false;
+        gameState.selectedProductId = null;
+        gameState.hagridRetry = true;
+        gameState.latestFeedback = customers.find((customer) => customer.id === "hagridDay1").failFeedback;
+        return;
+      }
+
+      recordRecommendation(false);
+      gameState.hagridRetry = false;
+      gameState.toadEnding = true;
+      gameState.shelfOpen = false;
+      gameState.latestFeedback = "一只巨大的蟾蜍跳上柜台，破口大骂。<br><br>你这个愚蠢的臭靴子！连这点活都干不好，你被解雇了！";
+    }
+
+    function renderToadFiringScene() {
+      setCurrentSlot("早上");
+      app.innerHTML = `
+        <section class="screen business scene-day toad-ending-screen">
+          ${renderStats()}
+          <div class="business-grid">
+            <section class="customer-panel">
+              <div class="portrait hagrid" aria-hidden="true"></div>
+              <h2 class="customer-name">海格</h2>
+            </section>
+            <section class="customer-panel toad-panel">
+              <div class="portrait toad" aria-hidden="true"></div>
+              <h2 class="customer-name">巨大的蟾蜍</h2>
+            </section>
+          </div>
+          <section class="dialogue-box">
+            <div>
+              <div id="dialogueContent"></div>
+            </div>
+            <div class="next-row">
+              <button class="secondary-btn dialogue-continue hidden" type="button" id="continueDialogueBtn">继续</button>
+              <button class="next-btn hidden" type="button" id="nextDayBtn">查看结局</button>
+            </div>
+            <section class="feedback-panel bad" id="feedbackPanel">
+              <p class="feedback-text hidden" id="feedbackText"></p>
+            </section>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      bindAfterSaleWidget();
+      const nextButton = document.querySelector("#nextDayBtn");
+      nextButton.onclick = showEnding;
+      setDialoguePages(gameState.latestFeedback, {
+        showNextWhenDone: true,
+        maxLength: 70
+      });
+    }
+
+    function handleBorginSpyProducts(productIds) {
+      gameState.borginVisited = true;
+      gameState.borginVisitDayIndex = gameState.currentDayIndex;
+      const total = getProductsTotal(productIds);
+
+      if (productIds.includes("routeCard")) {
+        recordRecommendation(false);
+        addCoins(getProduct("routeCard").price);
+        gameState.satisfaction = clamp(gameState.satisfaction + 5, 0, 100);
+        gameState.trust = clamp(gameState.trust - 10, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 15, 0, 100);
+        gameState.borginOutcome = "leakedRoute";
+        gameState.latestSelectionCorrect = false;
+        gameState.latestFeedback = "男人接过路线卡时，眼神终于亮了一下。<br><br>是一种猎人确认陷阱有效的表情。<br><br>你忽然意识到，他想买的或许是你们店的底牌。<br><br><span class=\"result-line\">结果：旅行经费 +57，顾客满意度 +5，商店声誉 -10，混乱值 +15。</span>";
+        return;
+      }
+
+      if (sameProductSet(productIds, bundleRules.borginSpy)) {
+        recordRecommendation(true);
+        addCoins(total);
+        gameState.satisfaction = clamp(gameState.satisfaction + 3, 0, 100);
+        gameState.trust = clamp(gameState.trust + 2, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 6, 0, 100);
+        gameState.borginOutcome = "fooled";
+        gameState.latestSelectionCorrect = true;
+        gameState.latestFeedback = "你把真心话糖果和速效逃课糖推给他。<br><br>“这个能制造非常逼真的突发状况。”<br><br>男人眯起眼，似乎把这句话理解成了某种高级战术。<br><br>他付钱离开时，甚至还有点满意。<br><br><span class=\"result-line\">结果：旅行经费 +" + total + "，顾客满意度 +3，商店声誉 +2，混乱值 +6。</span>";
+        return;
+      }
+
+      addCoins(total);
+      recordRecommendation(false);
+      gameState.satisfaction = clamp(gameState.satisfaction - 2, 0, 100);
+      gameState.chaos = clamp(gameState.chaos + 3, 0, 100);
+      gameState.borginOutcome = "none";
+      gameState.latestSelectionCorrect = false;
+      gameState.latestFeedback = "男人看了看商品，似乎不太满意，但也没有继续纠缠。<br><br>“看来传闻也不一定可靠。”<br><br>他离开后，柜台上的诚实墨水轻轻晃了一下。<br><br><span class=\"result-line\">结果：旅行经费 +" + total + "，顾客满意度 -2，混乱值 +3。</span>";
+    }
+
+    function handleSpecialSingleCustomerProduct(productId) {
+      const customer = getActiveCustomer();
+
+      if (customer.id === "arianaFirst") {
+        handleArianaFirstProduct(productId);
+        return;
+      }
+
+      if (customer.id === "nightWizard") {
+        handleNightWizardProduct(productId);
+      }
+    }
+
+    function handleArianaFirstProduct(productId) {
+      const product = getProduct(productId);
+      gameState.arianaFirstVisited = true;
+
+      if (productId === "silverCompass") {
+        recordRecommendation(true);
+        gameState.coins = Math.max(0, gameState.coins - product.price);
+        gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+        gameState.trust = clamp(gameState.trust + 7, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 3, 0, 100);
+        gameState.arianaFirstSuccess = true;
+        gameState.latestSelectionCorrect = true;
+        gameState.latestFeedback = "你把银指南针递给她。<br><br>指针没有急着指出某条路，而是在她半透明的掌心上轻轻停住，像是在确认她真正想面对的不是一扇门，而是门后的人。<br><br><strong>霍格莫德。猪头酒吧。</strong><br><br>女孩低头看着指南针，眼睛轻轻亮了一下。<br><br>“原来还在。”<br><br>她的身影变得更淡，像被风吹回很远的地方。<br><br>售后记录本自己翻开一页，纸上浮出一行很浅的字：她到了猪头酒吧门口，但她没有进去。<br><br><span class=\"result-line\">结果：旅行经费 -" + product.price + "，顾客满意度 +6，商店声誉 +7，混乱值 -3。</span>";
+        return;
+      }
+
+      if (productId === "handOfGlory") {
+        recordRecommendation(false);
+        gameState.satisfaction = clamp(gameState.satisfaction - 10, 0, 100);
+        gameState.trust = clamp(gameState.trust - 8, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 12, 0, 100);
+        gameState.arianaFirstSuccess = false;
+        gameState.latestSelectionCorrect = false;
+        gameState.latestFeedback = "干枯的人手握住蜡烛，光亮只照见持有者。<br><br>可女孩没有真正的手，也没有能被光照亮的身体。烛光穿过她的影子，落在地板上，像落进一段无法挽回的过去。<br><br>她后退了一步。<br><br>“我不想再躲在只有自己能看见的光里。”<br><br>她没有接受这个商品。<br><br><span class=\"result-line\">结果：顾客满意度 -10，商店声誉 -8，混乱值 +12。</span>";
+        return;
+      }
+
+      gameState.satisfaction = clamp(gameState.satisfaction - 10, 0, 100);
+      recordRecommendation(false);
+      gameState.trust = clamp(gameState.trust - 2, 0, 100);
+      gameState.chaos = clamp(gameState.chaos + 3, 0, 100);
+      gameState.arianaFirstSuccess = false;
+      gameState.latestSelectionCorrect = false;
+      gameState.latestFeedback = "她看着你递来的商品，轻轻摇头。<br><br>“这不是路。”<br><br>“或者说，这不是我还能走的路。”<br><br>窗玻璃上的画像影子慢慢淡去。烛火重新晃动起来，像什么都没有发生过。<br><br><span class=\"result-line\">结果：顾客满意度 -10，商店声誉 -2，混乱值 +3。</span>";
+    }
+
+    function handleNightWizardProduct(productId) {
+      const product = getProduct(productId);
+
+      if (productId === "handOfGlory") {
+        recordRecommendation(true);
+        addCoins(product.price);
+        gameState.nightWizardVisited = true;
+        gameState.latestSelectionCorrect = true;
+
+        if (gameState.nightWizardRetry) {
+          gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+          gameState.trust = clamp(gameState.trust - 8, 0, 100);
+          gameState.chaos = clamp(gameState.chaos + 20, 0, 100);
+          gameState.latestFeedback = "这一次，你从货架深处取出了光荣之手。<br><br>成年巫师终于露出一点满意的神情。<br><br>“这才像话。”<br><br>他把蜡烛插进干枯的手指间。火光亮起的一瞬间，整个店里都没有变亮。只有他的眼睛里映出一小团幽暗的光。<br><br>他把 300 银西可放在柜台上。<br><br>“放心。我只是路过。”<br><br>这句话听起来并没有让人更放心。<br><br><span class=\"result-line\">结果：旅行经费 +300，顾客满意度 +6，商店声誉 -8，混乱值 +20。</span>";
+        } else {
+          gameState.satisfaction = clamp(gameState.satisfaction + 8, 0, 100);
+          gameState.trust = clamp(gameState.trust - 8, 0, 100);
+          gameState.chaos = clamp(gameState.chaos + 18, 0, 100);
+          gameState.latestFeedback = "他看见光荣之手时，眼睛明显亮了一下。<br><br>干枯的手指握住蜡烛后，烛光只在他眼里亮起。<br><br>他立刻付钱，动作快得像早就知道自己要买什么。<br><br>这笔生意赚得很多，但你总觉得柜台后面的阴影变深了一点。<br><br><span class=\"result-line\">结果：旅行经费 +300，顾客满意度 +8，商店声誉 -8，混乱值 +18。</span>";
+        }
+
+        gameState.nightWizardRetry = false;
+        return;
+      }
+
+      if (!gameState.nightWizardRetry) {
+        recordRecommendation(false);
+        gameState.hasSelectedToday = false;
+        gameState.selectedProductId = null;
+        gameState.nightWizardRetry = true;
+        gameState.chaos = clamp(gameState.chaos + 2, 0, 100);
+        gameState.latestFeedback = "成年巫师低头看了看你递来的商品，没有伸手接。<br><br>“这东西不行。”<br><br>他的语气不算生气，更像是已经预料到你会拿错。<br><br>“我说过，我需要的不是普通照明，也不是指路工具。”<br><br>“我要的是一种只有我自己能看见的光。”<br><br>他抬起眼，看向货架更深处。<br><br>“你还有别的吗？”<br><br><span class=\"result-line\">混乱值 +2。请重新推荐一件商品。</span>";
+        gameState.latestSelectionCorrect = false;
+        return;
+      }
+
+      gameState.nightWizardVisited = true;
+      recordRecommendation(false);
+      gameState.nightWizardRetry = false;
+      gameState.satisfaction = clamp(gameState.satisfaction - 6, 0, 100);
+      gameState.trust = clamp(gameState.trust - 3, 0, 100);
+      gameState.chaos = clamp(gameState.chaos + 5, 0, 100);
+      gameState.latestSelectionCorrect = false;
+      gameState.latestFeedback = "成年巫师看着你第二次递来的商品，终于失去了耐心。<br><br>“算了。”<br><br>他把手套重新拉紧，语气冷淡下来。<br><br>“看来这家店只是看起来像有点门道。”<br><br>他转身离开。门铃响了一下，声音很轻，却让柜台后的烛火晃了很久。<br><br>你没有做成这笔生意。<br><br><span class=\"result-line\">结果：顾客满意度 -6，商店声誉 -3，混乱值 +5。</span>";
+    }
+
+    function handleAberforthProducts(productIds) {
+      gameState.aberforthVisited = true;
+      const total = getProductsTotal(productIds);
+
+      if (sameProductSet(productIds, bundleRules.aberforthDay2)) {
+        recordRecommendation(true);
+        addCoins(total);
+        gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+        gameState.trust = clamp(gameState.trust + 7, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 3, 0, 100);
+        gameState.aberforthCorrect = true;
+        gameState.latestSelectionCorrect = true;
+        gameState.latestFeedback = "阿不福思拿起沉默羊皮纸，又看了看双向回信羽毛笔。<br><br>“嗯。至少这两样东西知道什么时候该闭嘴，什么时候该把话送到。”<br><br>他把钱放在柜台上，语气还是硬邦邦的。<br><br>“别告诉我哥我来过。虽然他大概早就知道。”<br><br><span class=\"result-line\">结果：旅行经费 +" + total + "，顾客满意度 +6，商店声誉 +7，混乱值 -3。</span>";
+        return;
+      }
+
+      if (productIds.length === 1 && bundleRules.aberforthDay2.includes(productIds[0])) {
+        recordRecommendation(false);
+        addCoins(total);
+        gameState.satisfaction = clamp(gameState.satisfaction + 2, 0, 100);
+        gameState.trust = clamp(gameState.trust + 2, 0, 100);
+        gameState.aberforthCorrect = false;
+        gameState.latestSelectionCorrect = true;
+        gameState.latestFeedback = "阿不福思看着你只递来其中一样东西，皱了皱眉。<br><br>“凑合。至少不是完全没用。”<br><br><span class=\"result-line\">结果：旅行经费 +" + total + "，顾客满意度 +2，商店声誉 +2。</span>";
+        return;
+      }
+
+      gameState.satisfaction = clamp(gameState.satisfaction - 5, 0, 100);
+      recordRecommendation(false);
+      gameState.trust = clamp(gameState.trust - 3, 0, 100);
+      gameState.chaos = clamp(gameState.chaos + 4, 0, 100);
+      gameState.aberforthCorrect = false;
+      gameState.latestSelectionCorrect = false;
+      gameState.latestFeedback = "阿不福思看了看你递来的东西，脸色更不耐烦了。<br><br>“花哨，麻烦，而且没用。”<br><br>他没有买下它。<br><br><span class=\"result-line\">结果：顾客满意度 -5，商店声誉 -3，混乱值 +4。</span>";
+    }
+
+    function handleArianaSecondProducts(productIds) {
+      gameState.arianaSecondVisited = true;
+
+      if (sameProductSet(productIds, bundleRules.arianaSecond)) {
+        recordRecommendation(true);
+        const total = getProductsTotal(productIds);
+        const paidCost = Math.min(gameState.coins, total);
+        gameState.coins = Math.max(0, gameState.coins - total);
+        gameState.satisfaction = clamp(gameState.satisfaction + 20, 0, 100);
+        gameState.trust = clamp(gameState.trust + 2, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 3, 0, 100);
+        const achievementNotice = unlockAchievement("银色的守护", "阿利安娜留下了一朵永不枯萎的银百合。");
+        gameState.latestSelectionCorrect = true;
+        gameState.latestFeedback = "你把诚实墨水滴在纸角，又把双向回信羽毛笔放到旁边。<br><br>羽毛笔没有立刻动。过了很久，它才像被很远的另一只手握住，慢慢写下两行字。<br><br><strong>阿不福斯</strong><br><strong>阿不思</strong><br><br>过了几分钟，两行字从纸的另一端浮现出来。字迹粗重，不漂亮，甚至有些用力。<br><br><strong>我在。</strong><br><strong>RVEY OFEL OUVI ROE</strong><br><br>阿利安娜知道，有人仍然在那里。她对你笑了一下，伸出手，手上浮现出一朵银百合。<br><br>“送给你。”<br><br><span class=\"result-line\">结果：旅行经费 -" + paidCost + "，顾客满意度 +20，商店声誉 +2，混乱值 +3。</span>" + (achievementNotice ? `<br><strong>${achievementNotice}</strong>` : "");
+        return;
+      }
+
+      gameState.satisfaction = clamp(gameState.satisfaction - 10, 0, 100);
+      recordRecommendation(false);
+      gameState.trust = clamp(gameState.trust - 2, 0, 100);
+      gameState.chaos = clamp(gameState.chaos + 3, 0, 100);
+      gameState.latestFeedback = "阿利安娜看着你递来的东西，轻轻摇头。<br><br>“这不是我能带回去的话。”<br><br>银色的光慢慢暗下去。<br><br><span class=\"result-line\">结果：顾客满意度 -10，商店声誉 -2，混乱值 +3。</span>";
+      gameState.latestSelectionCorrect = false;
+    }
+
+    function handleSnakeFirstVisitProduct(productId) {
+      const product = getProduct(productId);
+
+      if (productId === "honestInk") {
+        recordRecommendation(true);
+        addCoins(product.price);
+        gameState.satisfaction = clamp(gameState.satisfaction + 4, 0, 100);
+        gameState.trust = clamp(gameState.trust + 4, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 8, 0, 100);
+        gameState.snakeRoute = "honest";
+        gameState.latestFeedback = hiddenCustomers.snakeDay5?.successFeedback || customers.find((customer) => customer.id === "snakeDay5").successFeedback;
+        return;
+      }
+
+      if (productId === "silverCompass" || productId === "routeCard") {
+        recordRecommendation(false);
+        addCoins(product.price);
+        gameState.snakeRoute = "tracking";
+        gameState.skipHarryDay6 = true;
+        gameState.latestFeedback = `黑蛇卷走了“${product.name}”。<br><br>它没有看你，只把身体缩进门缝后的阴影里。那一瞬间，你忽然意识到：你卖出去的也许不是商品，而是一条通往某个人的路。`;
+        return;
+      }
+
+      recordRecommendation(false);
+      addCoins(product.price);
+      gameState.satisfaction = clamp(gameState.satisfaction - 4, 0, 100);
+      gameState.trust = clamp(gameState.trust - 3, 0, 100);
+      gameState.chaos = clamp(gameState.chaos + 3, 0, 100);
+      gameState.snakeRoute = "none";
+      gameState.latestFeedback = customers.find((customer) => customer.id === "snakeDay5").failFeedback;
+    }
+
+    function handleTheodoreFirstVisitProduct(productId) {
+      const product = getProduct(productId);
+      const isSilentParchment = productId === "silentParchment";
+      recordRecommendation(isSilentParchment);
+      addCoins(product.price);
+
+      if (isSilentParchment) {
+        gameState.theodoreTrustUnlocked = true;
+        gameState.theodoreDay3Correct = true;
+        gameState.satisfaction = clamp(gameState.satisfaction + 8, 0, 100);
+        gameState.trust = clamp(gameState.trust + 6, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+        gameState.latestFeedback = `${hiddenCustomers.theodoreDay3.successFeedback}<br><br>西奥多离开前回头看了你一眼。那一眼很短，却不像第一次进店时那样疏离。`;
+      } else {
+        gameState.theodoreTrustUnlocked = false;
+        gameState.theodoreDay3Correct = false;
+        gameState.satisfaction = clamp(gameState.satisfaction - 6, 0, 100);
+        gameState.trust = clamp(gameState.trust - 4, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 5, 0, 100);
+        gameState.latestFeedback = `${hiddenCustomers.theodoreDay3.failFeedback}<br><strong>本次售出：</strong>${product.name}。`;
+      }
+    }
+
+    function handleDracoFirstVisitProduct(productId) {
+      const product = getProduct(productId);
+      const isAntiCurseButton = productId === "curseButton";
+      recordRecommendation(isAntiCurseButton);
+      gameState.dracoFirstVisited = true;
+      gameState.dracoBoughtCorrectItem = isAntiCurseButton;
+
+      if (isAntiCurseButton) {
+        gameState.satisfaction = clamp(gameState.satisfaction + 6, 0, 100);
+        gameState.trust = clamp(gameState.trust + 5, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+        gameState.latestFeedback = customers.find((customer) => customer.id === "dracoDay4").successFeedback;
+      } else {
+        gameState.satisfaction = clamp(gameState.satisfaction - 5, 0, 100);
+        gameState.trust = clamp(gameState.trust - 4, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 4, 0, 100);
+        gameState.latestFeedback = `${customers.find((customer) => customer.id === "dracoDay4").failFeedback}<br><strong>本次售出：</strong>${product.name}。`;
+      }
+    }
+
+    function handleTheodoreSecondVisitProduct(productId) {
+      const product = getProduct(productId);
+      const isFocusPotion = productId === "focusPotion";
+      recordRecommendation(isFocusPotion);
+      gameState.theodoreSecondVisitTriggered = true;
+
+      if (isFocusPotion) {
+        addCoins(product.price);
+        gameState.satisfaction = clamp(gameState.satisfaction + 4, 0, 100);
+        gameState.trust = clamp(gameState.trust - 6, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 15, 0, 100);
+        gameState.theodoreDay4Correct = true;
+        gameState.theodoreLovePotionAccident = true;
+        gameState.latestFeedback = hiddenCustomers.theodoreSecond.successFeedback;
+      } else {
+        gameState.satisfaction = clamp(gameState.satisfaction - 8, 0, 100);
+        gameState.trust = clamp(gameState.trust - 4, 0, 100);
+        gameState.chaos = clamp(gameState.chaos + 4, 0, 100);
+        gameState.theodoreDay4Correct = false;
+        gameState.theodoreLovePotionAccident = false;
+        gameState.latestFeedback = hiddenCustomers.theodoreSecond.failFeedback;
+      }
+    }
+
+    function showFeedback(isCorrect) {
+  const feedbackPanel = document.querySelector("#feedbackPanel");
+  const feedbackText = document.querySelector("#feedbackText");
+  const nextButton = document.querySelector("#nextDayBtn");
+
+  if (!feedbackPanel || !feedbackText || !nextButton) return;
+
+  feedbackPanel.classList.remove("good", "bad");
+  feedbackPanel.classList.add(isCorrect ? "good" : "bad");
+  feedbackText.innerHTML = gameState.latestFeedback;
+
+  if (getActiveCustomer().id === "nightWizard" && gameState.nightWizardRetry && !gameState.hasSelectedToday) {
+    nextButton.classList.add("hidden");
+    setDialoguePages(gameState.latestFeedback, { maxLength: 80 });
+    return;
+  }
+
+  if (getActiveCustomer().id === "hagridDay1" && gameState.hagridRetry && !gameState.hasSelectedToday) {
+    nextButton.classList.add("hidden");
+    setDialoguePages(gameState.latestFeedback, { maxLength: 80 });
+    return;
+  }
+
+  nextButton.textContent = getNextButtonLabel();
+  nextButton.onclick = nextDay;
+
+  setDialoguePages(gameState.latestFeedback, {
+    showNextWhenDone: true,
+    maxLength: 80
+  });
+
+}
+
+    function getNextButtonLabel() {
+  if (
+    gameState.hiddenEventActive &&
+    (gameState.activeCustomerId === "theodoreSecond" || gameState.activeCustomerId === "borginSpy")
+  ) {
+    return "下一位顾客";
+  }
+
+  if (gameState.hiddenEventActive) return "下一位顾客";
+      if (triggerTheodoreFirstVisit()) return "下一位顾客";
+      if (gameState.theodoreLovePotionAccident && !gameState.theodoreConfessionHandled && gameState.currentDayIndex === 4) return "进入晚上";
+      if (gameState.currentDayIndex === primaryCustomerIds.length - 1) return "查看本周结算";
+      return "下一位顾客";
+    }
+
+    function shouldTriggerJamesEvent() {
+      return gameState.unlockedJames && !gameState.jamesVisited && !gameState.hiddenEventActive;
+    }
+
+    function shouldTriggerTheodoreRoseLetter() {
+      return gameState.theodoreRoseLetterUnlocked
+        && !gameState.theodoreRoseLetterShown
+        && gameState.currentDayIndex === 4
+        && gameState.dracoBribeAccepted !== true
+        && !gameState.hiddenEventActive;
+    }
+
+    function shouldTriggerSnakeSundayShield() {
+      return gameState.snakeRoute === "warn"
+        && !gameState.snakeSundayHandled
+        && gameState.currentDayIndex === 6
+        && !gameState.hiddenEventActive;
+    }
+
+    function renderSnakeSundayShieldEvent() {
+      setCurrentSlot("晚上");
+      gameState.snakeSundayHandled = true;
+      app.innerHTML = `
+        <section class="screen after-sale-screen ${getSceneClass()}">
+          ${renderStats()}
+          <section class="after-sale-panel good">
+            <p class="eyebrow">${getDayLabel()} · 晚上</p>
+            <h1 class="after-sale-title">门外的黑蛇</h1>
+            <p class="after-sale-copy">${getDayLabel()}晚上，黑蛇再次出现。它停在商店门外，没有再爬进来。</p>
+            <p class="after-sale-copy">你这才发现，门口已经提前布下了一层淡淡的防护罩。</p>
+            <p class="after-sale-copy">黑蛇撞上防护罩，鳞片下的影子剧烈扭曲了一瞬。它愤怒地看着你。</p>
+            <p class="after-sale-copy">那双眼睛不像蛇。更像某个躲在很远地方的人，正通过它记住你的脸。</p>
+            <p class="after-sale-copy">但它进不来。片刻之后，黑蛇消失在夜色里。</p>
+            <div class="next-row">
+              <button class="next-btn" type="button" id="snakeShieldNextBtn">查看结算</button>
+            </div>
+          </section>
+          ${renderAfterSaleWidget()}
+        </section>
+      `;
+
+      document.querySelector("#snakeShieldNextBtn").addEventListener("click", showWeeklyReview);
+      bindAfterSaleWidget();
+    }
+
+    function renderTheodoreRoseLetterModal() {
+      setCurrentSlot("打烊后");
+      gameState.theodoreRoseLetterShown = true;
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "theodoreRoseLetterModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">${getDayLabel()}打烊后 · 门口的玫瑰</h2>
+          <p class="confirm-sale-copy">打烊后，你准备锁门，却发现商店门口放着一支深红色玫瑰。</p>
+          <p class="confirm-sale-copy">玫瑰旁边压着一封信。信封没有署名，只在封口处压着一枚很旧式的银色火漆。</p>
+          <p class="confirm-sale-copy">信纸上的字迹克制、漂亮，像是写信的人反复斟酌过每一个字。</p>
+          <p class="result-line">Would you grant me the honour of your company for tea, Miss?</p>
+          <p class="confirm-sale-copy">你不知道这封信是谁放的。</p>
+          <p class="confirm-sale-copy">但那种过分端正、过分古老的措辞，几乎已经把答案写在了纸背上。</p>
+          <div class="confirm-row">
+            <button class="next-btn" type="button" id="acceptTeaBtn">赴约</button>
+            <button class="secondary-btn" type="button" id="refuseTeaBtn">不去</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      document.querySelector("#acceptTeaBtn").addEventListener("click", () => handleTheodoreTeaChoice("accept", modal));
+      document.querySelector("#refuseTeaBtn").addEventListener("click", () => handleTheodoreTeaChoice("refuse", modal));
+    }
+
+    function handleTheodoreTeaChoice(choice, modal) {
+      modal.remove();
+
+      if (choice === "accept") {
+        gameState.theodoreDateAccepted = true;
+        gameState.theodoreDateRefused = false;
+        gameState.satisfaction = clamp(gameState.satisfaction + 4, 0, 100);
+        gameState.trust = clamp(gameState.trust + 3, 0, 100);
+        gameState.chaos = clamp(gameState.chaos - 2, 0, 100);
+        renderTheodoreTeaResult(
+          "赴约",
+          "你收下玫瑰花。<br><br>在那封信上留下一句话：<br><br><strong>I shall come.</strong><br><br>羽毛笔停顿了一下，又擅自补上一行：<br><br><strong>But only if you ask again when you are fully yourself.</strong><br><br>你看了那行字很久，最后没有划掉。<br><br>然后把信封放在了原来的位置。第二天你来开店时，那封信不见了，只剩下一枚很小的银色火漆印。上面压着诺特家的纹章。<br><br><span class=\"result-line\">顾客满意度 +4，商店声誉 +3，混乱值 -2。</span>"
+        );
+        return;
+      }
+
+      gameState.theodoreDateAccepted = false;
+      gameState.theodoreDateRefused = true;
+      gameState.satisfaction = clamp(gameState.satisfaction - 2, 0, 100);
+      gameState.trust = clamp(gameState.trust + 1, 0, 100);
+      gameState.chaos = clamp(gameState.chaos - 1, 0, 100);
+      renderTheodoreTeaResult(
+        "不去",
+        "你把那封信重新折好，和玫瑰一起放回原处。<br><br>第二天清晨，信封上的银色火漆自己裂开了一道细小的缝。<br><br>只有自动羽毛笔在纸角写下一句：<br><br><strong>Some silences are also answers.</strong><br><br>有些沉默也是回答。<br><br><span class=\"result-line\">顾客满意度 -2，商店声誉 +1，混乱值 -1。</span>"
+      );
+    }
+
+    function renderTheodoreTeaResult(title, text) {
+      const modal = document.createElement("section");
+      modal.className = "confirm-sale-modal";
+      modal.id = "theodoreTeaResultModal";
+      modal.innerHTML = `
+        <div class="confirm-sale-dialog">
+          <h2 class="confirm-sale-title">${title}</h2>
+          <p class="confirm-sale-copy">${text}</p>
+          <div class="next-row">
+            <button class="next-btn" type="button" id="closeTeaResultBtn">收起信件</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      document.querySelector("#closeTeaResultBtn").addEventListener("click", () => {
+        modal.remove();
+        nextDay();
+      });
+    }
+
+    function showJamesEvent() {
+      recordHiddenEvent("詹姆斯");
+      gameState.hiddenEventActive = true;
+      gameState.jamesVisited = true;
+      gameState.activeCustomerId = "jamesHidden";
+      gameState.hasSelectedToday = false;
+      gameState.selectedProductId = null;
+      gameState.selectedProductIds = [];
+      gameState.shelfPage = 0;
+      gameState.latestFeedback = "";
+      renderCustomer();
+    }
+
+    function nextDay() {
+      if (gameState.sameDayCustomerActive) {
+        gameState.sameDayCustomerActive = false;
+        gameState.activeCustomerId = null;
+        gameState.hasSelectedToday = false;
+        gameState.selectedProductId = null;
+        gameState.selectedProductIds = [];
+        gameState.shelfPage = 0;
+        gameState.shelfOpen = false;
+        gameState.latestFeedback = "";
+        renderOpeningCustomer();
+        return;
+      }
+
+      if (gameState.hiddenEventActive) {
+        gameState.hiddenEventActive = false;
+        gameState.activeCustomerId = null;
+
+        if (gameState.pendingNextDayAfterHidden) {
+          gameState.pendingNextDayAfterHidden = false;
+          if (shouldTriggerJamesEvent()) {
+            gameState.pendingNextDayAfterHidden = true;
+            showJamesEvent();
+            return;
+          }
+          advanceToNextDay();
+          return;
+        }
+
+        gameState.hasSelectedToday = false;
+        gameState.selectedProductId = null;
+        gameState.selectedProductIds = [];
+        gameState.shelfPage = 0;
+        gameState.latestFeedback = "";
+        renderOpeningCustomer();
+        return;
+      }
+
+      if (triggerTheodoreFirstVisit()) {
+        renderTheodoreFirstVisit();
+        return;
+      }
+
+      if (shouldTriggerDracoTheodoreScene()) {
+        renderDracoTheodoreScene();
+        return;
+      }
+
+      if (triggerTheodoreConfession()) {
+        return;
+      }
+
+      if (shouldTriggerTheodoreRoseLetter()) {
+        renderTheodoreRoseLetterModal();
+        return;
+      }
+
+      if (triggerEndOfDayExtraCustomer()) {
+        return;
+      }
+
+      if (shouldTriggerSnakeSundayShield()) {
+        renderSnakeSundayShieldEvent();
+        return;
+      }
+
+      if (shouldTriggerJamesEvent()) {
+        gameState.pendingNextDayAfterHidden = true;
+        showJamesEvent();
+        return;
+      }
+
+      advanceToNextDay();
+    }
+
+    function triggerEndOfDayExtraCustomer() {
+      if (gameState.currentDayIndex === 1 && !gameState.aberforthVisited) {
+        showExtraCustomer("aberforthDay2", true);
+        return true;
+      }
+
+      if (gameState.currentDayIndex === 3 && gameState.arianaFirstSuccess && !gameState.arianaSecondVisited) {
+        showExtraCustomer("arianaSecond", true);
+        return true;
+      }
+
+      return false;
+    }
+
+    function advanceToNextDay() {
+      if (gameState.currentDayIndex >= primaryCustomerIds.length - 1) {
+        showWeeklyReview();
+        return;
+      }
+
+      gameState.currentDayIndex += 1;
+      startDay();
+    }
+
+    function getEnding() {
+      const { coins, satisfaction, trust, chaos } = gameState;
+
+      if (gameState.toadEnding) {
+        return {
+          title: "蟾蜍的臭靴子",
+          text: "你居然被一只蟾蜍嫌弃了？"
+        };
+      }
+
+      if (gameState.snakeEnding === "prisoner") {
+        return {
+          title: "囚徒",
+          text: "你本来只是在魔法商店打七天零工。你本来只是想攒够去埃及旅行的钱。但你对那条黑蛇说了加油。从那一刻起，你不再是旁观者。手臂上的标记无法洗去。商店拒绝你再次进入，顾客们也不再相信你只是一次失误。后来有人问起你为什么会被赶出那家店。你想了很久，最后只说：“我以为那只是一句玩笑。”可魔法从来不把所有玩笑都当成玩笑。"
+        };
+      }
+
+      if (gameState.snakeEnding === "earlyDeparture") {
+        return {
+          title: "提前出发",
+          text: "你看着柜台上的 1700 银西可，忽然觉得七天试用期也没有那么重要了。第二天清晨，你没有再打开商店的门。你带着钱提前出发，去看金字塔、古墓咒文和魔法遗迹。至于哈利为什么没有再来，黑蛇到底拿着指南针去了哪里，商店门口为什么多了几片黑色鳞片。那已经不是临时工该管的事了。"
+        };
+      }
+
+      if (gameState.theodoreDateAccepted && gameState.cleanEarnedCoins >= gameState.travelGoal && gameState.snakeEnding !== "earlyDeparture" && gameState.dracoBribeAccepted !== true) {
+        return {
+          title: "埃及前的一杯茶",
+          text: "七天结束时，你终于数清了柜台里的银西可。1500 银西可，刚好够去埃及。你本该立刻出发。可离开商店前，你在店门口又看到了一束玫瑰。它安静地躺在那里，像一个没有催促的约定。所以你没有直接去车站，而是先去了那家信里写到的茶室。西奥多已经坐在那里，面前放着两只茶杯。他看起来比那天清醒得多，也比那天更紧张。他站起来，礼节周全得近乎古板。“谢谢你愿意来。”你坐下时，他没有立刻说喜欢，也没有提起迷情剂。他只是把一杯茶推到你面前，声音很低：“这一次，我是清醒的。”窗外的天色慢慢暗下去。你的埃及旅行没有取消。只是出发之前，多了一杯茶的时间。"
+        };
+      }
+
+      if (chaos >= 80) {
+        return {
+          title: "售后灾难预备役",
+          text: "这一周的账本赚到了钱，也攒下了足够让店长夜里坐起来的麻烦。好消息是你很有行动力，坏消息是售后登记簿已经开始自己发抖。"
+        };
+      }
+
+      if (trust <= 30) {
+        return {
+          title: "被店长派去整理仓库",
+          text: "店长没有开除你，只是递来一串沉甸甸的仓库钥匙。里面的扫帚会吵架，旧书会咳嗽，至少它们暂时不会要求退款。"
+        };
+      }
+
+      if (coins >= gameState.travelGoal && satisfaction >= 70 && trust >= 70 && chaos <= 40) {
+        return {
+          title: "魔法商店明日之星",
+          text: "你攒够了去埃及的旅行经费，也保住了顾客的安全感和商店的口碑。店长在账本上写下“可培养”，旁边还画了一颗很克制的小星星。"
+        };
+      }
+
+      if (coins < gameState.travelGoal && satisfaction >= 70 && trust >= 70 && chaos <= 50) {
+        return {
+          title: "差点去成埃及",
+          text: "你还没攒够钱，但商店口碑已经传开了。也许下周再打几天工，你就能真的出发，去看金字塔、古墓咒文和魔法遗迹。"
+        };
+      }
+
+      if (satisfaction >= 75 && chaos <= 50) {
+        return {
+          title: "温柔可靠店员",
+          text: "顾客们记住了你的耐心和判断力。也许你不是卖得最多的那一个，但很多人在离店时都把门轻轻带上了。"
+        };
+      }
+
+      if (coins >= 220 && chaos > 50) {
+        return {
+          title: "销售天才但有点危险",
+          text: "银西可叮当作响，货架也少了不少存货。至于为什么店里的钟开始倒着走，店长决定先数完钱再问你。"
+        };
+      }
+
+      return {
+        title: "普通实习店员",
+        text: "你顺利完成了一周打工。没有惊天动地的名声，也没有炸掉柜台，这在魔法商店里已经算一种稳健的成绩。"
+      };
+    }
+
+    function showWeeklyReview() {
+      const hiddenEventsText = gameState.hiddenEvents.length ? gameState.hiddenEvents.join(" / ") : "无";
+      const hasEnoughMoney = gameState.coins >= gameState.travelGoal;
+
+      app.innerHTML = `
+        <section class="screen ending-screen">
+          <section class="ending-panel">
+            <p class="eyebrow">一周复盘</p>
+            <h1 class="ending-title">打工周报</h1>
+            <p class="ending-copy">店长的账本自动翻到最后一页，把这一周发生过的事情整整齐齐地列了出来。</p>
+            <div class="review-grid">
+              <article class="review-item">
+                <p class="review-label">本周接待顾客</p>
+                <p class="review-value">${TOTAL_REGULAR_CUSTOMERS}/${TOTAL_REGULAR_CUSTOMERS}</p>
+              </article>
+              <article class="review-item">
+                <p class="review-label">正确推荐</p>
+                <p class="review-value">${gameState.correctRecommendations}/${TOTAL_RECOMMENDATION_SLOTS}</p>
+              </article>
+              <article class="review-item">
+                <p class="review-label">错误推荐</p>
+                <p class="review-value">${gameState.wrongRecommendations}/${TOTAL_RECOMMENDATION_SLOTS}</p>
+              </article>
+              <article class="review-item">
+                <p class="review-label">触发售后</p>
+                <p class="review-value">${afterSaleRecords.length}/${TOTAL_AFTER_SALE_SLOTS}</p>
+              </article>
+              <article class="review-item">
+                <p class="review-label">触发隐藏事件</p>
+                <p class="review-value">${gameState.hiddenEvents.length}/${TOTAL_HIDDEN_EVENTS}</p>
+                <p class="achievement-desc">${hiddenEventsText}</p>
+              </article>
+              <article class="review-item">
+                <p class="review-label">解锁成就</p>
+                <p class="review-value">${gameState.achievements.length}/${TOTAL_ACHIEVEMENTS}</p>
+              </article>
+              <article class="review-item">
+                <p class="review-label">旅行经费</p>
+                <p class="review-value">${gameState.coins}/${gameState.travelGoal}</p>
+              </article>
+              <article class="review-item">
+                <p class="review-label">正常经营收入</p>
+                <p class="review-value">${gameState.cleanEarnedCoins}/${gameState.travelGoal}</p>
+              </article>
+              <article class="review-item">
+                <p class="review-label">是否攒够旅行经费</p>
+                <p class="review-value">${hasEnoughMoney ? "是" : "否"}</p>
+              </article>
+            </div>
+            <button class="primary-btn restart-btn" type="button" id="showEndingBtn">查看最终结局</button>
+          </section>
+        </section>
+      `;
+
+      document.querySelector("#showEndingBtn").addEventListener("click", showEnding);
+    }
+
+    function showEnding() {
+      const ending = getEnding();
+
+      app.innerHTML = `
+        <section class="screen ending-screen">
+          <section class="ending-panel">
+            <p class="eyebrow">一周营业结束</p>
+            <h1 class="ending-title">${ending.title}</h1>
+            <p class="ending-copy">${ending.text}</p>
+            <div class="ending-stats">
+              <div class="stat">
+                <div class="stat-label">旅行经费</div>
+                <div class="stat-value">${gameState.coins}/${gameState.travelGoal}</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">顾客满意度</div>
+                <div class="stat-value">${gameState.satisfaction}</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">商店声誉</div>
+                <div class="stat-value">${gameState.trust}</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">混乱值</div>
+                <div class="stat-value">${gameState.chaos}</div>
+              </div>
+            </div>
+            ${renderAchievements()}
+            ${renderTheodoreTeaRecord()}
+            <button class="primary-btn restart-btn" type="button" id="restartBtn">重新打工</button>
+          </section>
+        </section>
+      `;
+
+      document.querySelector("#restartBtn").addEventListener("click", restartGame);
+    }
+
+    function renderTheodoreTeaRecord() {
+      if (!gameState.theodoreDateRefused) return "";
+
+      return `
+        <section class="achievement-panel">
+          <h2 class="panel-title">隐藏记录：未赴的茶约</h2>
+          <p class="achievement-desc">你没有接受西奥多的邀请。那封信没有再出现，但有些话已经被听见了。</p>
+        </section>
+      `;
+    }
+
+    function unlockTheodoreAchievement(choice) {
+      const records = {
+        accept: {
+          title: "未说破的答应",
+          text: "你没有把那句表白立刻钉成答案，也没有假装自己没有听见。那一晚之后，西奥多留下了一封措辞古老的邀请函。真正的问题，被推迟到了清醒之后。"
+        },
+        refuse: {
+          title: "克制的拒绝",
+          text: "你指出了迷情剂的影响，也用一瓶解药承担了自己的失误。西奥多没有逃走，只是把那份失礼收回到清醒与礼节之中。"
+        },
+        calm: {
+          title: "清醒之后再问我",
+          text: "你没有否定他的心意，也没有接受药效制造出的冲动。你让他等清醒之后再问，而那封放在门口的信，像一个迟来的正式开场。"
+        }
+      };
+
+      const record = records[choice];
+      if (record) unlockAchievement(record.title, record.text);
+    }
+
+    function renderAchievements() {
+      return `
+        <section class="achievement-panel">
+          <h2 class="panel-title">隐藏成就</h2>
+          <div class="achievement-list">
+            ${gameState.achievements.length === 0 ? `
+              <p class="achievement-desc">本周没有解锁隐藏成就。</p>
+            ` : gameState.achievements.map((achievement) => `
+              <article class="achievement-item">
+                <p class="achievement-name">${achievement.name}</p>
+                <p class="achievement-desc">${achievement.description}</p>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function restartGame() {
+      gameState.currentDayIndex = 0;
+      gameState.currentSlotIndex = 0;
+      gameState.currentSlot = "开店前";
+      gameState.coins = 0;
+      gameState.cleanEarnedCoins = 0;
+      gameState.satisfaction = 50;
+      gameState.trust = 50;
+      gameState.chaos = 0;
+      gameState.hasSelectedToday = false;
+      gameState.selectedProductId = null;
+      gameState.selectedProductIds = [];
+      gameState.latestFeedback = "";
+      gameState.latestSelectionCorrect = false;
+      gameState.correctRecommendations = 0;
+      gameState.wrongRecommendations = 0;
+      gameState.hiddenEvents = [];
+      gameState.activeCustomerId = null;
+      gameState.sameDayCustomerActive = false;
+      gameState.hiddenEventActive = false;
+      gameState.pendingNextDayAfterHidden = false;
+      gameState.hagridVisited = false;
+      gameState.hagridRetry = false;
+      gameState.hagridHintShown = false;
+      gameState.toadEnding = false;
+      gameState.unlockedJames = false;
+      gameState.jamesVisited = false;
+      gameState.theodoreTrustUnlocked = false;
+      gameState.theodoreDay3Correct = false;
+      gameState.theodoreDay4Correct = false;
+      gameState.theodoreSecondVisitTriggered = false;
+      gameState.theodoreLovePotionAccident = false;
+      gameState.theodoreConfessionHandled = false;
+      gameState.theodoreConfessionChoice = null;
+      gameState.theodoreRoseLetterUnlocked = false;
+      gameState.theodoreRoseLetterShown = false;
+      gameState.theodoreDateAccepted = false;
+      gameState.theodoreDateRefused = false;
+      gameState.dracoFirstVisited = false;
+      gameState.dracoBoughtCorrectItem = false;
+      gameState.dracoTheodoreConflictUnlocked = false;
+      gameState.dracoTheodoreHarmonyUnlocked = false;
+      gameState.dracoWarningTriggered = false;
+      gameState.dracoBribeAccepted = false;
+      gameState.dracoBribeRejected = false;
+      gameState.jamesGiftPrepared = false;
+      gameState.lupinTrustUnlocked = false;
+      gameState.lupinMorningEventHandled = false;
+      gameState.lupinAlbumEventTriggered = false;
+      gameState.lupinAlbumAccepted = false;
+      gameState.lupinAlbumAvailable = false;
+      gameState.lupinAlbumGivenToHarry = false;
+      gameState.lupinAlbumPromptKey = null;
+      gameState.lupinHelpedInInjuredHarryEvent = false;
+      gameState.jamesDittanyGivenToHarry = false;
+      gameState.maraudersWatchUnlocked = false;
+      gameState.snakeRoute = null;
+      gameState.snakeSaturdayHandled = false;
+      gameState.snakeSundayHandled = false;
+      gameState.snakeEnding = null;
+      gameState.skipHarryDay6 = false;
+      gameState.routeCardCorrectSales = 0;
+      gameState.maraudersMapUnlocked = false;
+      gameState.borginVisited = false;
+      gameState.borginOutcome = null;
+      gameState.borginVisitDayIndex = null;
+      gameState.borginFollowupHandled = false;
+      gameState.aberforthVisited = false;
+      gameState.aberforthCorrect = false;
+      gameState.arianaFirstVisited = false;
+      gameState.arianaFirstSuccess = false;
+      gameState.arianaSecondVisited = false;
+      gameState.nightWizardVisited = false;
+      gameState.nightWizardRetry = false;
+      gameState.randomCustomersVisited = [];
+      gameState.randomCustomerSlots = {};
+      gameState.achievements = [];
+      afterSalePool.length = 0;
+      afterSaleRecords.length = 0;
+      renderCover();
+      renderDevPanel();
+    }
+
+    renderCover();
+    renderDevPanel();
+  </script>
+</body>
+</html>
