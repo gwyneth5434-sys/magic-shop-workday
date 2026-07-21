@@ -70,12 +70,67 @@
       mix-blend-mode: screen;
     }
 
+    .loading-screen {
+      min-height: calc(100vh - 24px);
+      border: 0;
+      background: #000;
+      box-shadow: none;
+      display: grid;
+      place-items: center;
+      padding: 40px;
+      color: #f8e7bd;
+    }
+
+    .loading-screen::before {
+      display: none;
+    }
+
+    .loading-panel {
+      width: min(620px, 84vw);
+      text-align: center;
+    }
+
+    .loading-title {
+      margin: 0 0 26px;
+      font-size: clamp(28px, 5vw, 54px);
+      color: #f7d47e;
+      text-shadow: 0 0 18px rgba(232, 176, 70, 0.35);
+    }
+
+    .loading-copy {
+      margin: 0 0 22px;
+      font-size: 18px;
+      color: rgba(255, 244, 214, 0.82);
+    }
+
+    .loading-track {
+      height: 16px;
+      border: 2px solid rgba(226, 177, 83, 0.72);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
+
+    .loading-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #8d5b24, #f2c46c, #fff0b4);
+      transition: width 180ms ease;
+    }
+
+    .loading-percent {
+      margin-top: 12px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffe29b;
+    }
+
     .cover {
       min-height: calc(100vh - 24px);
       border: 0;
       background:
         linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.2)),
-        url("cover.png") center / cover no-repeat;
+        url("cover.webp") center / cover no-repeat;
       box-shadow: none;
       display: flex;
       align-items: flex-end;
@@ -645,7 +700,7 @@
       overflow: hidden;
       background:
         linear-gradient(180deg, rgba(20, 12, 8, 0.08), rgba(12, 7, 5, 0.2)),
-        url("shop-day.jpg") center / cover no-repeat;
+        url("shop-day.webp") center / cover no-repeat;
       box-shadow: none;
     }
 
@@ -658,7 +713,7 @@
     .after-sale-screen.scene-night {
       background:
         linear-gradient(180deg, rgba(5, 5, 10, 0.18), rgba(5, 3, 2, 0.32)),
-        url("shop-night.png") center / cover no-repeat;
+        url("shop-night.webp") center / cover no-repeat;
     }
 
     .business.screen::before,
@@ -759,50 +814,50 @@
       display: none;
     }
 
-    .customer-panel .portrait.harry { background-image: url("char-harry.png"); }
-    .customer-panel .portrait.hermione { background-image: url("char-hermione.png"); }
-    .customer-panel .portrait.trial { background-image: url("char-trial.png"); }
-    .customer-panel .portrait.nightwizard { background-image: url("char-nightwizard.png"); }
+    .customer-panel .portrait.harry { background-image: url("char-harry.webp"); }
+    .customer-panel .portrait.hermione { background-image: url("char-hermione.webp"); }
+    .customer-panel .portrait.trial { background-image: url("char-trial.webp"); }
+    .customer-panel .portrait.nightwizard { background-image: url("char-nightwizard.webp"); }
     .customer-panel .portrait.hagrid {
-      background-image: url("char-hagrid.png");
+      background-image: url("char-hagrid.webp");
       flex-basis: 485px;
       width: 485px;
       height: 500px;
     }
-    .customer-panel .portrait.draco { background-image: url("char-draco.png"); }
-    .customer-panel .portrait.theodore { background-image: url("char-theodore.png"); }
+    .customer-panel .portrait.draco { background-image: url("char-draco.webp"); }
+    .customer-panel .portrait.theodore { background-image: url("char-theodore.webp"); }
     .customer-panel .portrait.ariana {
-      background-image: url("char-ariana.png");
+      background-image: url("char-ariana.webp");
       opacity: 0.86;
       filter: drop-shadow(0 0 18px rgba(220, 230, 255, 0.5));
     }
-    .customer-panel .portrait.aberforth { background-image: url("char-aberforth.png"); }
-    .customer-panel .portrait.lupin { background-image: url("char-lupin.png"); }
+    .customer-panel .portrait.aberforth { background-image: url("char-aberforth.webp"); }
+    .customer-panel .portrait.lupin { background-image: url("char-lupin.webp"); }
     .customer-panel .portrait.bowtruckle {
-      background-image: url("char-bowtruckle.png");
+      background-image: url("char-bowtruckle.webp");
       flex-basis: 345px;
       width: 345px;
     }
     .customer-panel .portrait.crookshanks {
-      background-image: url("char-crookshanks.png");
+      background-image: url("char-crookshanks.webp");
       flex-basis: 450px;
       width: 450px;
       height: 390px;
     }
-    .customer-panel .portrait.rita { background-image: url("char-rita.png"); }
+    .customer-panel .portrait.rita { background-image: url("char-rita.webp"); }
     .customer-panel .portrait.james {
-      background-image: url("char-james.png");
+      background-image: url("char-james.webp");
       opacity: 0.82;
       filter: drop-shadow(0 0 18px rgba(220, 230, 255, 0.42));
     }
     .customer-panel .portrait.snake {
-      background-image: url("char-snake.png");
+      background-image: url("char-snake.webp");
       flex-basis: 450px;
       width: 450px;
       height: 360px;
     }
     .customer-panel .portrait.toad {
-      background-image: url("char-toad.png");
+      background-image: url("char-toad.webp");
       flex-basis: 430px;
       width: 430px;
       height: 430px;
@@ -988,7 +1043,7 @@
       margin-top: 0;
       padding: 30px 44px 22px clamp(112px, 12vw, 178px);
       border: 0;
-      background: url("dialogue-frame.png") center / 100% 100% no-repeat;
+      background: url("dialogue-frame.webp") center / 100% 100% no-repeat;
       color: #24150e;
       box-shadow: none;
     }
@@ -1978,6 +2033,33 @@
     };
 
     const app = document.querySelector("#app");
+    const ASSET_PATHS = [
+      "cover.webp",
+      "shop-day.webp",
+      "shop-night.webp",
+      "dialogue-frame.webp",
+      "closed-book.webp",
+      "open-book.webp",
+      "bag-closed.webp",
+      "bag-open.webp",
+      "shelf-icon.webp",
+      "char-hagrid.webp",
+      "char-harry.webp",
+      "char-hermione.webp",
+      "char-trial.webp",
+      "char-nightwizard.webp",
+      "char-draco.webp",
+      "char-theodore.webp",
+      "char-ariana.webp",
+      "char-aberforth.webp",
+      "char-lupin.webp",
+      "char-bowtruckle.webp",
+      "char-crookshanks.webp",
+      "char-rita.webp",
+      "char-james.webp",
+      "char-snake.webp",
+      "char-toad.webp"
+    ];
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
@@ -2256,6 +2338,57 @@
 
       const primaryCustomerId = primaryCustomerIds[gameState.currentDayIndex];
       return customers.find((customer) => customer.id === primaryCustomerId) || customers[0];
+    }
+
+    function renderLoadingScreen() {
+      app.innerHTML = `
+        <section class="screen loading-screen">
+          <div class="loading-panel">
+            <h1 class="loading-title">魔法商店打工日</h1>
+            <p class="loading-copy">正在整理货架、点亮烛火、叫醒会自己乱跑的羽毛笔……</p>
+            <div class="loading-track" aria-label="素材加载进度">
+              <div class="loading-bar" id="loadingBar"></div>
+            </div>
+            <p class="loading-percent" id="loadingPercent">0%</p>
+          </div>
+        </section>
+      `;
+    }
+
+    function preloadGameAssets() {
+      const loadingBar = document.querySelector("#loadingBar");
+      const loadingPercent = document.querySelector("#loadingPercent");
+      let loadedCount = 0;
+
+      const updateProgress = () => {
+        loadedCount += 1;
+        const percent = Math.round((loadedCount / ASSET_PATHS.length) * 100);
+        if (loadingBar) loadingBar.style.width = `${percent}%`;
+        if (loadingPercent) loadingPercent.textContent = `${percent}%`;
+      };
+
+      return Promise.all(ASSET_PATHS.map((src) => new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => {
+          updateProgress();
+          resolve();
+        };
+        image.onerror = () => {
+          updateProgress();
+          resolve();
+        };
+        image.src = src;
+      })));
+    }
+
+    function bootGame() {
+      renderLoadingScreen();
+      preloadGameAssets().then(() => {
+        window.setTimeout(() => {
+          renderCover();
+          renderDevPanel();
+        }, 220);
+      });
     }
 
     function renderCover() {
@@ -3531,21 +3664,21 @@
         <nav class="tool-dock" aria-label="快捷工具">
           <button class="tool-button after-sale-book-button" type="button" id="afterSaleBookBtn" aria-label="打开售后记录">
             <span class="tool-icon-wrap book-icon-wrap" aria-hidden="true">
-              <img class="book-icon-closed" src="closed-book.png" alt="" />
-              <img class="book-icon-open" src="open-book.png" alt="" />
+              <img class="book-icon-closed" src="closed-book.webp" alt="" />
+              <img class="book-icon-open" src="open-book.webp" alt="" />
             </span>
             <span class="tool-label book-label">After Sale</span>
           </button>
           <button class="tool-button bag-button" type="button" id="bagBtn" aria-label="打开背包">
             <span class="tool-icon-wrap" aria-hidden="true">
-              <img class="bag-icon-closed" src="bag-closed.png" alt="" />
-              <img class="bag-icon-open" src="bag-open.png" alt="" />
+              <img class="bag-icon-closed" src="bag-closed.webp" alt="" />
+              <img class="bag-icon-open" src="bag-open.webp" alt="" />
             </span>
             <span class="tool-label">Bag</span>
           </button>
           <button class="tool-button shelf-button" type="button" id="shelfBtn" aria-label="查看货架">
             <span class="tool-icon-wrap" aria-hidden="true">
-              <img src="shelf-icon.png" alt="" />
+              <img src="shelf-icon.webp" alt="" />
             </span>
             <span class="tool-label">Shelf</span>
           </button>
@@ -3553,7 +3686,7 @@
         <section class="after-sale-modal hidden" id="afterSaleModal" aria-modal="true" role="dialog" aria-labelledby="afterSaleModalTitle">
           <div class="after-sale-dialog">
             <div class="modal-title-row">
-              <img class="modal-book-art" src="open-book.png" alt="" />
+              <img class="modal-book-art" src="open-book.webp" alt="" />
               <h2 class="modal-title" id="afterSaleModalTitle">After Sale</h2>
               <button class="secondary-btn modal-close" type="button" id="closeAfterSaleModalTop">关闭记录本</button>
             </div>
@@ -5259,8 +5392,8 @@
       renderDevPanel();
     }
 
-    renderCover();
-    renderDevPanel();
+    bootGame();
   </script>
 </body>
 </html>
+
